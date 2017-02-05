@@ -31,7 +31,7 @@ Tape::Tape() {
 }
 
 void Tape::play() {
-    for (size_t i = 0; i < sizeof(TAPE); i++) {
+    for (size_t i = 0; i < sizeof(TAPE) / sizeof(char); i++) {
         char note = TAPE[i];
         // Play a tone
         if (note > 0) {
@@ -116,10 +116,8 @@ String Tape::noteName(size_t note) {
 
 // Render SCREEN_SIZE of TAPE starting from viewportStart
 String Tape::render() {
-    // --------------------
-    // |   |   |   |   |
     // loop for screen width
-    char screenBuffer[20] = {};
+    char screenBuffer[20]; // is initialiser needed?
     for (size_t i = 0; i < 20; i++) {
         if ((i + viewportStart) % 4 == 0) {
             screenBuffer[i] = '|';

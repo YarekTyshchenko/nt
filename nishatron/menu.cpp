@@ -5,6 +5,14 @@
 // Edit -> Tape
 // Play -> Tape.play()
 
+Menu::Menu() {
+    MenuItem items[] = {
+        MenuItem("Edit"),
+        MenuItem("Play"),
+    };
+    menu = items;
+}
+
 Menu::Menu(MenuItem _menu[], size_t _size) {
     // Viewport
     // Cursor vertical
@@ -22,13 +30,6 @@ void Menu::render(char buffer[][20], size_t size) {
         MenuItem *item = &menu[cursor];
         item->render(buffer[i], 20);
     }
-    // Define visible area 16x2
-    // Grab the index
-    //unsigned int _index = index;
-    //char buffer[20]; // sprintf buffer
-    //sprintf(buffer[0], "%s %d %d","menu[0]", _index, millis());
-    //return String(buffer);
-  //return ( + _index) + " " + String(millis());
 }
 
 void Menu::up() {
@@ -43,6 +44,6 @@ void Menu::down() {
 
 void Menu::press() {
     //press = !press;
-    MenuItem *item = &menu[cursor];
-    item->press();
+    //MenuItem *item = &menu[cursor];
+    //item->press();
 }

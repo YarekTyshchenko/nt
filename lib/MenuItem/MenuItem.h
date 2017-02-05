@@ -7,4 +7,6 @@ public:
     MenuItem(const char*, RenderFunction);
     void press();
     void render(char[], size_t);
+private:
+    const char *name;
 };
