@@ -5,7 +5,8 @@ class Menu {
 public:
     Menu();
     Menu(MenuItem[], size_t);
-    void render(char[][20], size_t);
+    // void render(char[][20], size_t);
+    void render(char[], size_t);
     void up();
     void down();
     void press();

@@ -9,4 +9,5 @@ public:
     void render(char[], size_t);
 private:
     const char *name;
+    RenderFunction renderCallback;
 };
