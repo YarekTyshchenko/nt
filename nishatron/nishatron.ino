@@ -30,8 +30,8 @@ void setup() {
     lcd.clear();
 
     MenuItem items[] = {
-        MenuItem("Edit", EditTapeRender), // Should call Tape::render()
-        MenuItem("Play", PlayTapeRender), // Should call Tape::play() and exit
+        MenuItem("  Edit Tape         ", EditTapeRender), // Should call Tape::render() when pressed
+        MenuItem("  Play Tape         ", PlayTapeRender), // Should call Tape::play() and exit
     };
 
     menu = Menu(items, 1);
@@ -40,13 +40,14 @@ void setup() {
     attachInterrupt(1, rotate, CHANGE);
 }
 
-//This is a sample callback funtion for when a menu item with no children (aka command) is selected
-void EditTapeRender(char foo[], size_t size) {
-    strcpy(foo, "  Edit Tape         ");
+bool EditTapeRender(char foo[], size_t size) {
+    //strcpy(foo, "  Edit Tape         ");
+    return false;
 };
 
 void PlayTapeRender(char foo[], size_t size) {
-    strcpy(foo, "  Play Tape         ");
+    //strcpy(foo, "  Play Tape         ");
+    return false;
 };
 
 bool state = false;
@@ -59,7 +60,7 @@ char b2[42] = "11111111111111111111"
               "22222222222222222222";
 void loop() {
     lcd.setCursor(0, 0);
-    lcd.print(b1);
+    lcd.print("11111111111111111111");
 //    lcd.print(tape.render());
     lcd.setCursor(0, 1);
     // lcd.print("Head: ");
@@ -68,7 +69,6 @@ void loop() {
     // lcd.print(" Note: ");
     // lcd.print(tape.noteName(tape.noteAt(position)));
     // lcd.print("        ");
-    b1[5] = '_';
     menu.render(b1, 21);
     lcd.print(b1);
 
@@ -82,6 +82,7 @@ void loop() {
     if (!state && digitalRead(13)) {
         state = true;
         //tape.press();
+        menu.press();
     } else {
         state = digitalRead(13);
     }

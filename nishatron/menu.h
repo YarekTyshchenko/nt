@@ -14,4 +14,5 @@ private:
     volatile uint8_t cursor;
     MenuItem *menu;
     size_t size;
+    volatile bool enterMenuItem;
 };

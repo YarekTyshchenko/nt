@@ -14,6 +14,6 @@ void MenuItem::press() {
 
 }
 
-void MenuItem::render(char buffer[], size_t size) {
-    this->renderCallback(buffer, size);
+bool MenuItem::render(char buffer[], size_t size) {
+    return this->renderCallback(buffer, size);
 }

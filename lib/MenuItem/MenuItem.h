@@ -1,13 +1,13 @@
 #include <Arduino.h>
-typedef void (*RenderFunction)(char[], size_t);
+typedef bool (*RenderFunction)(char[], size_t);
 
 class MenuItem {
 public:
     MenuItem(const char*);
     MenuItem(const char*, RenderFunction);
     void press();
-    void render(char[], size_t);
-private:
+    bool render(char[], size_t);
     const char *name;
+private:
     RenderFunction renderCallback;
 };

@@ -17,6 +17,7 @@ Menu::Menu(MenuItem _menu[], size_t _size) {
     menu = _menu;
     size = _size;
     cursor = 0;
+    enterMenuItem = false;
 }
 
 // void Menu::render(char buffer[][20], size_t size) {
@@ -28,11 +29,19 @@ Menu::Menu(MenuItem _menu[], size_t _size) {
 //     }
 // }
 
+// @TODO: Convert to render two lines;
 void Menu::render(char buffer[], size_t size) {
     // Render current selection
     MenuItem item = menu[cursor];
-    item.render(buffer, size);
-    buffer[0] = '>';
+    if (enterMenuItem) {
+        // Enter, should exit? true, get back to rendering the menu item
+        enterMenuItem = item.render(buffer, size);
+        //enterMenuItem = false;
+        return;
+    }
+
+    strcpy(buffer, item.name); // Fix buffer sizing issues
+    buffer[0] = '>'; // Blank the rest of the row too.
 }
 
 void Menu::up() {
@@ -46,7 +55,7 @@ void Menu::down() {
 }
 
 void Menu::press() {
-    //press = !press;
-    //MenuItem *item = &menu[cursor];
-    //item->press();
+    enterMenuItem = true;
+    MenuItem item = menu[cursor];
+    item.press();
 }
