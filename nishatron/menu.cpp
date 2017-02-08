@@ -4,12 +4,7 @@
 // Encoder 1 -> 0
 // Edit -> Tape
 // Play -> Tape.play()
-
-Menu::Menu() {
-
-}
-
-Menu::Menu(MenuItem _menu[], size_t _size) {
+Menu::Menu(MenuItem* _menu[], size_t _size) {
     // Viewport
     // Cursor vertical
     // Cursor level
@@ -32,30 +27,42 @@ Menu::Menu(MenuItem _menu[], size_t _size) {
 // @TODO: Convert to render two lines;
 void Menu::render(char buffer[], size_t size) {
     // Render current selection
-    MenuItem item = menu[cursor];
+    MenuItem* item = menu[cursor];
     if (enterMenuItem) {
-        // Enter, should exit? true, get back to rendering the menu item
-        enterMenuItem = item.render(buffer, size);
-        //enterMenuItem = false;
+    //     // Enter, should exit? true, get back to rendering the menu item
+        enterMenuItem = item->render(buffer, size);
+        // item->render(buffer, size);
+        // enterMenuItem = false;
         return;
     }
 
-    strcpy(buffer, item.name); // Fix buffer sizing issues
+    strcpy(buffer, item->name); // Fix buffer sizing issues
     buffer[0] = '>'; // Blank the rest of the row too.
 }
 
 void Menu::up() {
+    if (enterMenuItem) {
+        // menu[cursor]->up();
+        return;
+    }
     if (cursor > 0)
         cursor--;
 }
 
 void Menu::down() {
+    if (enterMenuItem) {
+        // menu[cursor]->down();
+        return;
+    }
     if (cursor < size)
         cursor++;
 }
 
 void Menu::press() {
+    if (enterMenuItem) {
+        MenuItem* item = menu[cursor];
+        item->press();
+        return;
+    }
     enterMenuItem = true;
-    MenuItem item = menu[cursor];
-    item.press();
 }

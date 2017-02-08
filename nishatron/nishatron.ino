@@ -8,16 +8,16 @@
 WinstarOLED lcd;
 Rotary rotary = Rotary(2, 3);
 //Tape tape;
-Menu menu;
+Menu *menu;
 
 // rotate is called anytime the rotary inputs change state.
 void rotate() {
     unsigned char result = rotary.process();
     if (result == DIR_CW) {
-        menu.down();
+        menu->down();
 //        tape.right(); // Menu should pass these on
     } else if (result == DIR_CCW) {
-        menu.up();
+        menu->up();
 //        tape.left();
     }
 }
@@ -29,24 +29,30 @@ void setup() {
     lcd.begin(16, 2);
     lcd.clear();
 
-    MenuItem items[] = {
-        MenuItem("  Edit Tape         ", EditTapeRender), // Should call Tape::render() when pressed
-        MenuItem("  Play Tape         ", PlayTapeRender), // Should call Tape::play() and exit
+    MenuItem* items[] = {
+        new MenuItem("  Edit Tape         ", EditTapeRender), // Should call Tape::render() when pressed
+        new MenuItem("  Play Tape         ", PlayTapeRender), // Should call Tape::play() and exit
     };
 
-    menu = Menu(items, 1);
+    menu = new Menu(items, 1);
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
 }
 
-bool EditTapeRender(char foo[], size_t size) {
-    //strcpy(foo, "  Edit Tape         ");
-    return false;
+// Bool = more output required
+bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
+    strcpy(foo, "  Edit Tape  Yo     ");
+    MenuItem *menuItem = _menuItem;
+    if (menuItem->pressed) {
+        menuItem->pressed = false;
+        return false;
+    }
+    return true;
 };
 
-void PlayTapeRender(char foo[], size_t size) {
-    //strcpy(foo, "  Play Tape         ");
+bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
+    strcpy(foo, "  Play Tape  Yo     ");
     return false;
 };
 
@@ -69,7 +75,7 @@ void loop() {
     // lcd.print(" Note: ");
     // lcd.print(tape.noteName(tape.noteAt(position)));
     // lcd.print("        ");
-    menu.render(b1, 21);
+    menu->render(b1, 21);
     lcd.print(b1);
 
     // menu.render(buffer, sizeof(buffer) / sizeof(char[20]));
@@ -82,7 +88,7 @@ void loop() {
     if (!state && digitalRead(13)) {
         state = true;
         //tape.press();
-        menu.press();
+        menu->press();
     } else {
         state = digitalRead(13);
     }
