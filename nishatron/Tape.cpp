@@ -131,7 +131,7 @@ String Tape::noteName(size_t note) {
 // Render SCREEN_SIZE of TAPE starting from viewportStart
 void Tape::render(char screenBuffer[]) {
     // loop for screen width
-    for (size_t i = 0; i < 20; i++) {
+    for (size_t i = 0; i < 20; i++) { // @TODO: Shouldn't that be 21?
         if ((i + viewportStart) % 4 == 0) {
             screenBuffer[i] = '|';
         } else {

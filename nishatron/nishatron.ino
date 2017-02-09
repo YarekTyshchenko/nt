@@ -30,20 +30,43 @@ void setup() {
     tape = new Tape();
 
     MenuItem* items[] = {
+        new MenuItem("  Settings          ", NoopRender, NoopControl),
+        new MenuItem("  BPM               ", NoopRender, NoopControl),
         new MenuItem("  Edit Tape         ", EditTapeRender, EditTapeControl),
         new MenuItem("  Play Tape         ", PlayTapeRender, PlayTapeControl),
+        new MenuItem("  Dummy 1           ", NoopRender, NoopControl),
+        new MenuItem("  Dummy 2           ", NoopRender, NoopControl),
+        new MenuItem("  Dummy 3           ", NoopRender, NoopControl),
+        new MenuItem("  Dummy 4           ", NoopRender, NoopControl),
+        new MenuItem("  Dummy 5           ", NoopRender, NoopControl),
+        new MenuItem("  Dummy 6           ", NoopRender, NoopControl),
     };
 
     // -1 because we are working with 0 indexed cursor
-    menu = new Menu(items, sizeof(items) / sizeof(items[0]) - 1);
+    menu = new Menu(items, sizeof(items) / sizeof(items[0]));
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
 }
 
+bool NoopRender(void *_menuItem, char buffer[], size_t size) {
+    return false;
+}
+
+void NoopControl(uint8_t mode) {
+
+}
+
 // Bool = more output required
 bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
     tape->render(foo);
+    //strcpy(foo, "Head: ");
+    // lcd.print("Head: ");
+    // size_t position = tape->headPosition();
+    // lcd.print(position);
+    // lcd.print(" Note: ");
+    // lcd.print(tape->noteName(tape->noteAt(position)));
+    // lcd.print("        ");
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -80,35 +103,17 @@ void PlayTapeControl(uint8_t mode) {
 }
 
 bool state = false;
-char buffer[][20] = {
-    "xxxxxxxxxxxxxxxxxxx",
-    "xxxxxxxxxxxxxxxxxxx"
+char buffer[][21] = {
+    "xxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxx"
 };
-char b0[21] = "     A     B    C   ";
-char b1[21] = "XxxxxxxxxxxxxxxxxxxV";
-char b2[42] = "11111111111111111111"
-              "22222222222222222222";
 void loop() {
-    lcd.setCursor(0, 0);
-    //lcd.print(tape->render());
-
-    lcd.print(b0);
-//    lcd.print(tape.render());
-    lcd.setCursor(0, 1);
-    // lcd.print("Head: ");
-    // size_t position = tape->headPosition();
-    // lcd.print(position);
-    // lcd.print(" Note: ");
-    // lcd.print(tape->noteName(tape->noteAt(position)));
-    // lcd.print("        ");
-    menu->render(b1, 21);
-    lcd.print(b1);
-
-    // menu.render(buffer, sizeof(buffer) / sizeof(char[20]));
-    // for (size_t i = 0; i < sizeof(buffer) / sizeof(char[20]); i++) {
-    //     lcd.setCursor(0, i);
-    //     lcd.print(String(buffer[i])); // Remove this String?
-    // }
+    size_t rowCount = sizeof(buffer) / sizeof(buffer[0]);
+    menu->render(buffer, rowCount);
+    for (size_t i = 0; i < rowCount; i++) {
+        lcd.setCursor(0, i);
+        lcd.print(buffer[i]);
+    }
 
     // Crude handling of a push button
     if (!state && digitalRead(13)) {

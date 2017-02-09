@@ -4,13 +4,15 @@
 class Menu {
 public:
     Menu(MenuItem*[], size_t);
-    void render(char[], size_t);
+    void render(char[][21], size_t size);
     void up();
     void down();
     void press();
 private:
     volatile uint8_t cursor;
     MenuItem **menu;
-    size_t size;
+    size_t menuRowCount;
     volatile bool enterMenuItem;
+    size_t viewportOffset;
+    size_t viewportStart;
 };
