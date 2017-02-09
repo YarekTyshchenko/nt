@@ -11,6 +11,11 @@ Menu::Menu(MenuItem* _menu[], size_t _size) {
     enterMenuItem = false;
 }
 
+void Menu::preselect(size_t position, bool enter) {
+    cursor = position;
+    enterMenuItem = enter;
+}
+
 void Menu::render(char buffer[][21], size_t viewportSize) {
     // Render current selection
     MenuItem* item = menu[cursor];

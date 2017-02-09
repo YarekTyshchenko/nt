@@ -8,6 +8,7 @@ public:
     void up();
     void down();
     void press();
+    void preselect(size_t position, bool enter);
 private:
     volatile uint8_t cursor;
     MenuItem **menu;

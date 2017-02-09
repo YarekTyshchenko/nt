@@ -44,6 +44,7 @@ void setup() {
 
     // -1 because we are working with 0 indexed cursor
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
+    menu->preselect(2, true);
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
