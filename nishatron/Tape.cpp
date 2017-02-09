@@ -28,6 +28,7 @@ Tape::Tape() {
     _index = 0;
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
+    _shouldExit = false;
 }
 
 void Tape::play() {
@@ -60,6 +61,12 @@ void Tape::noteDecrementPitch(size_t position) {
         TAPE[position]--;
     NewTone(4, frequencies[(size_t)TAPE[position]], 1000);
 }
+
+bool Tape::shouldExit() {
+    _shouldExit = false;
+    return _shouldExit;
+}
+
 void Tape::left() {
     if (movingHead) {
         if (_headPosition > 0)
@@ -70,6 +77,9 @@ void Tape::left() {
             // Hit left stop
             if (viewportStart > 0) {
                 viewportStart--;
+            } else {
+                // Exit out of the menu item
+                _shouldExit = true;
             }
         }
     } else {

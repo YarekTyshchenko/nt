@@ -12,7 +12,10 @@ public:
     char noteAt(size_t position);
     String noteName(size_t note);
     void play();
+
+    bool shouldExit();
 private:
+    bool _shouldExit;
     volatile unsigned short _index;
     volatile bool movingHead;
     unsigned int _headPosition;

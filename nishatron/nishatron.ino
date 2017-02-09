@@ -7,7 +7,7 @@
 
 WinstarOLED lcd;
 Rotary rotary = Rotary(2, 3);
-//Tape tape;
+Tape *tape;
 Menu *menu;
 
 // rotate is called anytime the rotary inputs change state.
@@ -15,10 +15,8 @@ void rotate() {
     unsigned char result = rotary.process();
     if (result == DIR_CW) {
         menu->down();
-//        tape.right(); // Menu should pass these on
     } else if (result == DIR_CCW) {
         menu->up();
-//        tape.left();
     }
 }
 
@@ -28,6 +26,8 @@ void setup() {
     lcd.reset();
     lcd.begin(16, 2);
     lcd.clear();
+
+    tape = new Tape();
 
     MenuItem* items[] = {
         new MenuItem("  Edit Tape         ", EditTapeRender), // Should call Tape::render() when pressed
@@ -42,8 +42,16 @@ void setup() {
 
 // Bool = more output required
 bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
-    strcpy(foo, "  Edit Tape  Yo     ");
-    MenuItem *menuItem = _menuItem;
+    String tapeBuffer = tape->render();
+    tapeBuffer.toCharArray(foo, 21);
+
+    // Should exit -> is more output required
+    return !tape->shouldExit();
+};
+
+bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
+    strcpy(foo, "  Play Tape  Yo     ");
+    MenuItem *menuItem = (MenuItem*) _menuItem;
     if (menuItem->pressed) {
         menuItem->pressed = false;
         return false;
@@ -51,16 +59,12 @@ bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
     return true;
 };
 
-bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
-    strcpy(foo, "  Play Tape  Yo     ");
-    return false;
-};
-
 bool state = false;
 char buffer[][20] = {
     "xxxxxxxxxxxxxxxxxxx",
     "xxxxxxxxxxxxxxxxxxx"
 };
+char b0[21] = "                    ";
 char b1[21] = "XxxxxxxxxxxxxxxxxxxV";
 char b2[42] = "11111111111111111111"
               "22222222222222222222";
@@ -87,7 +91,6 @@ void loop() {
     // Crude handling of a push button
     if (!state && digitalRead(13)) {
         state = true;
-        //tape.press();
         menu->press();
     } else {
         state = digitalRead(13);
