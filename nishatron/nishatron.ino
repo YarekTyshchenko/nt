@@ -30,11 +30,12 @@ void setup() {
     tape = new Tape();
 
     MenuItem* items[] = {
-        new MenuItem("  Edit Tape         ", EditTapeRender, EditTapeControl), // Should call Tape::render() when pressed
-        new MenuItem("  Play Tape         ", PlayTapeRender, PlayTapeControl), // Should call Tape::play() and exit
+        new MenuItem("  Edit Tape         ", EditTapeRender, EditTapeControl),
+        new MenuItem("  Play Tape         ", PlayTapeRender, PlayTapeControl),
     };
 
-    menu = new Menu(items, 1);
+    // -1 because we are working with 0 indexed cursor
+    menu = new Menu(items, sizeof(items) / sizeof(items[0]) - 1);
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
