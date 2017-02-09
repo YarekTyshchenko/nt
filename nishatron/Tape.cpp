@@ -2,7 +2,7 @@
 #include <NewTone.h>
 
 #define MAX_TAPE_SIZE 300
-#define SCREEN_SIZE 19
+#define SCREEN_SIZE 20
 
 char TAPE[MAX_TAPE_SIZE] = {};
 
@@ -33,7 +33,7 @@ Tape::Tape() {
 }
 
 void Tape::play() {
-    for (size_t i = 0; i < sizeof(TAPE) / sizeof(char); i++) {
+    for (size_t i = 0; i < sizeof(TAPE) / sizeof(TAPE[0]); i++) {
         char note = TAPE[i];
         // Play a tone
         if (note > 0) {
@@ -93,14 +93,14 @@ void Tape::left() {
 
 void Tape::right() {
     if (movingHead) {
-        if (_headPosition < MAX_TAPE_SIZE)
+        if (_headPosition < MAX_TAPE_SIZE-1)
             _headPosition++;
-        if (_index < SCREEN_SIZE) {
+        if (_index < SCREEN_SIZE - 1) {
             _index++; // Can work out the index from head position + viewportStart
         } else {
-            // Hit righ stop
-            if (viewportStart < MAX_TAPE_SIZE)
-            viewportStart++;
+            // Hit right stop
+            if (viewportStart < MAX_TAPE_SIZE-1)
+                viewportStart++;
         }
     } else {
         noteIncrementPitch(_headPosition);
@@ -131,13 +131,17 @@ const char* Tape::noteName(size_t note) {
 // Render SCREEN_SIZE of TAPE starting from viewportStart
 void Tape::render(char screenBuffer[]) {
     // loop for screen width
-    for (size_t i = 0; i < 20; i++) { // @TODO: Shouldn't that be 21?
+    for (size_t i = 0; i < SCREEN_SIZE; i++) { // @TODO: Shouldn't that be 21?
         if ((i + viewportStart) % 4 == 0) {
             screenBuffer[i] = '|';
         } else {
             screenBuffer[i] = '-';
         }
 
+        if (i + viewportStart > MAX_TAPE_SIZE-1) {
+            screenBuffer[i] = 'X';
+            break;
+        }
         char note = TAPE[i + viewportStart];
         // display note
         if (note > 0) {

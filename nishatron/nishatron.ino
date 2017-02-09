@@ -62,7 +62,9 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
     const char *note = tape->noteName(tape->noteAt(position));
-    sprintf(buffer[1], "Head: %d Note: %s ", position, note);
+    //snprintf(buffer[1], 21, "Head: %d Note: %s ", position, note);
+    snprintf(buffer[1], 21, "vpS: %d, Pos: %d    ", tape->viewportStart, position);
+
 
     // Should exit -> is more output required
     return !tape->shouldExit();
