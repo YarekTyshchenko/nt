@@ -43,8 +43,8 @@ void setup() {
 
 // Bool = more output required
 bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
-    String tapeBuffer = tape->render();
-    tapeBuffer.toCharArray(foo, 21);
+    // String tapeBuffer = tape->render();
+    // tapeBuffer.toCharArray(foo, 21);
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -56,10 +56,11 @@ void EditTapeControl(uint8_t mode) {
     } else if (mode == CONTROL_CCW) {
         tape->left();
     } else if (mode == CONTROL_PRESS) {
-        tape->press();
+        //tape->press();
     } else {
         // Error ?
     }
+
 }
 
 bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
@@ -74,7 +75,7 @@ bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
 
 void PlayTapeControl(uint8_t mode) {
     if (mode == CONTROL_PRESS) {
-        tape->play();
+        //tape->play();
     }
 }
 
@@ -83,20 +84,25 @@ char buffer[][20] = {
     "xxxxxxxxxxxxxxxxxxx",
     "xxxxxxxxxxxxxxxxxxx"
 };
-char b0[21] = "                    ";
+char b0[21] = "     A     B    C   ";
 char b1[21] = "XxxxxxxxxxxxxxxxxxxV";
 char b2[42] = "11111111111111111111"
               "22222222222222222222";
 void loop() {
     lcd.setCursor(0, 0);
-    lcd.print("11111111111111111111");
+    tape->render(b0);
+    //lcd.print(tape->render()); // This crashes it
+    //String tapeBuffer = tape->render();
+    //tapeBuffer.toCharArray(b2, 21);
+
+    lcd.print(b0);
 //    lcd.print(tape.render());
     lcd.setCursor(0, 1);
     // lcd.print("Head: ");
-    // size_t position = tape.headPosition();
+    // size_t position = tape->headPosition();
     // lcd.print(position);
     // lcd.print(" Note: ");
-    // lcd.print(tape.noteName(tape.noteAt(position)));
+    // lcd.print(tape->noteName(tape->noteAt(position)));
     // lcd.print("        ");
     menu->render(b1, 21);
     lcd.print(b1);

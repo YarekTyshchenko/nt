@@ -7,7 +7,7 @@ public:
     void right();
     void press();
     // One line render
-    String render();
+    void render(char buffer[]);
     unsigned int headPosition();
     char noteAt(size_t position);
     String noteName(size_t note);

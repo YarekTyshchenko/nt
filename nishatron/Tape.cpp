@@ -29,6 +29,7 @@ Tape::Tape() {
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
     _shouldExit = false;
+    _headPosition = 0;
 }
 
 void Tape::play() {
@@ -63,8 +64,11 @@ void Tape::noteDecrementPitch(size_t position) {
 }
 
 bool Tape::shouldExit() {
-    _shouldExit = false;
-    return _shouldExit;
+    if (_shouldExit) {
+        _shouldExit = false;
+        return true;
+    }
+    return false;
 }
 
 void Tape::left() {
@@ -125,9 +129,8 @@ String Tape::noteName(size_t note) {
 }
 
 // Render SCREEN_SIZE of TAPE starting from viewportStart
-String Tape::render() {
+void Tape::render(char screenBuffer[]) {
     // loop for screen width
-    char screenBuffer[20]; // is initialiser needed?
     for (size_t i = 0; i < 20; i++) {
         if ((i + viewportStart) % 4 == 0) {
             screenBuffer[i] = '|';
@@ -150,5 +153,4 @@ String Tape::render() {
     //buffer[0] = (char)_index;
     // 29 square
     // 255 block
-    return String(screenBuffer);
 }

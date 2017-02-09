@@ -42,7 +42,7 @@ void Menu::render(char buffer[], size_t size) {
 
 void Menu::up() {
     if (enterMenuItem) {
-        // menu[cursor]->up();
+        menu[cursor]->ccw();
         return;
     }
     if (cursor > 0)
@@ -51,7 +51,7 @@ void Menu::up() {
 
 void Menu::down() {
     if (enterMenuItem) {
-        // menu[cursor]->down();
+        menu[cursor]->cw();
         return;
     }
     if (cursor < size)
