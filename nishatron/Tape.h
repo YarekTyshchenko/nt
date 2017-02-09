@@ -8,17 +8,17 @@ public:
     void press();
     // One line render
     void render(char buffer[]);
-    unsigned int headPosition();
+    size_t headPosition();
     char noteAt(size_t position);
     const char* noteName(size_t note);
     void play();
 
     bool shouldExit();
-    volatile int viewportStart; // Move this to private
+    volatile size_t viewportStart; // Move this to private
 private:
     bool _shouldExit;
     volatile bool movingHead;
-    unsigned int _headPosition;
+    volatile size_t _headPosition;
     char renderNote(char note);
     void noteIncrementPitch(size_t position);
     void noteDecrementPitch(size_t position);

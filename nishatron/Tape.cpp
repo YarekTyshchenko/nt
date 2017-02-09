@@ -44,7 +44,7 @@ void Tape::play() {
     }
 }
 
-unsigned int Tape::headPosition() {
+size_t Tape::headPosition() {
     return _headPosition;
 }
 
@@ -81,7 +81,7 @@ void Tape::left() {
             _headPosition--;
 
         // Hit left stop
-        if (_headPosition < viewportStart) { //@TODO: convert all positions to uint ?
+        if (_headPosition < viewportStart) {
             viewportStart = _headPosition;
         }
 
