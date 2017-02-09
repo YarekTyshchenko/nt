@@ -25,7 +25,6 @@ const char* notes[] = {
 };
 
 Tape::Tape() {
-    _index = 0;
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
     _shouldExit = false;
@@ -73,19 +72,19 @@ bool Tape::shouldExit() {
 
 void Tape::left() {
     if (movingHead) {
+        // Exit out of the menu item
+        if (_headPosition <= 0) {
+            _shouldExit = true;
+        }
+
         if (_headPosition > 0)
             _headPosition--;
-        if (_index > 0) {
-            _index--;
-        } else {
-            // Hit left stop
-            if (viewportStart > 0) {
-                viewportStart--;
-            } else {
-                // Exit out of the menu item
-                _shouldExit = true;
-            }
+
+        // Hit left stop
+        if (_headPosition < viewportStart) { //@TODO: convert all positions to uint ?
+            viewportStart = _headPosition;
         }
+
     } else {
         noteDecrementPitch(_headPosition);
     }
@@ -95,12 +94,10 @@ void Tape::right() {
     if (movingHead) {
         if (_headPosition < MAX_TAPE_SIZE-1)
             _headPosition++;
-        if (_index < SCREEN_SIZE - 1) {
-            _index++; // Can work out the index from head position + viewportStart
-        } else {
-            // Hit right stop
-            if (viewportStart < MAX_TAPE_SIZE-1)
-                viewportStart++;
+
+        // Hit right stop
+        if (_headPosition - viewportStart > (SCREEN_SIZE - 1)) {
+            viewportStart = _headPosition - (SCREEN_SIZE - 1);
         }
     } else {
         noteIncrementPitch(_headPosition);
@@ -149,12 +146,9 @@ void Tape::render(char screenBuffer[]) {
         }
     }
 
-    unsigned short index = _index;
-    if (index > 20) index = 20;
-    if (index < 0) index = 0;
-
-    screenBuffer[index] = (char)29;
-    //buffer[0] = (char)_index;
+    // Display Cursor
     // 29 square
     // 255 block
+    size_t cursor = _headPosition - viewportStart;
+    screenBuffer[cursor] = (char)29;
 }

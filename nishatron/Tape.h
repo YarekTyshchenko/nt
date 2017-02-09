@@ -14,10 +14,9 @@ public:
     void play();
 
     bool shouldExit();
-    int viewportStart; // Move this to private
+    volatile int viewportStart; // Move this to private
 private:
     bool _shouldExit;
-    volatile unsigned short _index;
     volatile bool movingHead;
     unsigned int _headPosition;
     char renderNote(char note);
