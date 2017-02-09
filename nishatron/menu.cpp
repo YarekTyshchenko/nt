@@ -11,16 +11,22 @@ Menu::Menu(MenuItem* _menu[], size_t _size) {
     enterMenuItem = false;
 }
 
-// @TODO: Convert to render two lines;
 void Menu::render(char buffer[][21], size_t viewportSize) {
-    // Handle case when: menu 5, viewportSize: 2, cursor: 4
+    // Render current selection
+    MenuItem* item = menu[cursor];
+    // Is menu item activated?
+    if (enterMenuItem) {
+        // Does this render require more rendering?
+        enterMenuItem = item->render(buffer, sizeof(buffer) / sizeof(buffer[0]));
+        return;
+    }
+
     // Calculate viewport start
     if (cursor < viewportStart)
         viewportStart = cursor;
     if (cursor > viewportStart + (viewportSize -1))
         viewportStart = cursor - (viewportSize -1);
-
-
+    // Render selections
     for (size_t i = 0; i < viewportSize; i++) {
         // render everything
         MenuItem *it = menu[i+viewportStart];
@@ -29,17 +35,6 @@ void Menu::render(char buffer[][21], size_t viewportSize) {
             buffer[i][0] = '>'; // Blank the rest of the row too.
         }
     }
-    //     // Render current selection
-    //     MenuItem* item = menu[cursor];
-    //     // Is menu item activated?
-    //     if (enterMenuItem) {
-    //         // Does this render require more rendering?
-    //         enterMenuItem = item->render(buffer, size);
-    //         return;
-    //     }
-    //
-    //     strcpy(buffer, item->name); // Fix buffer sizing issues
-    // }
 }
 
 void Menu::up() {

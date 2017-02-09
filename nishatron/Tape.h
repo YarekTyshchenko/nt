@@ -10,7 +10,7 @@ public:
     void render(char buffer[]);
     unsigned int headPosition();
     char noteAt(size_t position);
-    String noteName(size_t note);
+    const char* noteName(size_t note);
     void play();
 
     bool shouldExit();

@@ -49,7 +49,7 @@ void setup() {
     attachInterrupt(1, rotate, CHANGE);
 }
 
-bool NoopRender(void *_menuItem, char buffer[], size_t size) {
+bool NoopRender(void *_menuItem, char buffer[][21], size_t rows) {
     return false;
 }
 
@@ -58,15 +58,11 @@ void NoopControl(uint8_t mode) {
 }
 
 // Bool = more output required
-bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
-    tape->render(foo);
-    //strcpy(foo, "Head: ");
-    // lcd.print("Head: ");
-    // size_t position = tape->headPosition();
-    // lcd.print(position);
-    // lcd.print(" Note: ");
-    // lcd.print(tape->noteName(tape->noteAt(position)));
-    // lcd.print("        ");
+bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
+    tape->render(buffer[0]);
+    size_t position = tape->headPosition();
+    const char *note = tape->noteName(tape->noteAt(position));
+    sprintf(buffer[1], "Head: %d Note: %s ", position, note);
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -85,9 +81,9 @@ void EditTapeControl(uint8_t mode) {
 
 }
 
-bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
+bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     // @TODO: Render the tape playing
-    strcpy(foo, "  Play Tape  Yo     ");
+    strcpy(buffer[0], "  Play Tape  Yo     ");
     MenuItem *menuItem = (MenuItem*) _menuItem;
     if (menuItem->pressed) { //@TODO: This can be refactored into a control callback
         menuItem->pressed = false;
@@ -103,16 +99,16 @@ void PlayTapeControl(uint8_t mode) {
 }
 
 bool state = false;
-char buffer[][21] = {
+char oledBuffer[][21] = {
     "xxxxxxxxxxxxxxxxxxxx",
     "xxxxxxxxxxxxxxxxxxxx"
 };
 void loop() {
-    size_t rowCount = sizeof(buffer) / sizeof(buffer[0]);
-    menu->render(buffer, rowCount);
+    size_t rowCount = sizeof(oledBuffer) / sizeof(oledBuffer[0]);
+    menu->render(oledBuffer, rowCount);
     for (size_t i = 0; i < rowCount; i++) {
         lcd.setCursor(0, i);
-        lcd.print(buffer[i]);
+        lcd.print(oledBuffer[i]);
     }
 
     // Crude handling of a push button

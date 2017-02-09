@@ -124,8 +124,8 @@ char Tape::noteAt(size_t position) {
     return TAPE[position];
 }
 
-String Tape::noteName(size_t note) {
-    return String(notes[note]);
+const char* Tape::noteName(size_t note) {
+    return notes[note];
 }
 
 // Render SCREEN_SIZE of TAPE starting from viewportStart

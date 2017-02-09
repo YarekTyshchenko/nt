@@ -21,6 +21,6 @@ void MenuItem::ccw() {
     controlCallback(CONTROL_CCW);
 }
 
-bool MenuItem::render(char buffer[], size_t size) {
-    return this->renderCallback(this, buffer, size);
+bool MenuItem::render(char buffer[][21], size_t rows) {
+    return this->renderCallback(this, buffer, rows);
 }

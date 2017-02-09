@@ -1,5 +1,5 @@
 #include <Arduino.h>
-typedef bool (*RenderFunction)(void*, char[], size_t);
+typedef bool (*RenderFunction)(void*, char[][21], size_t rows);
 typedef void (*ControlFunction)(uint8_t mode);
 
 #define CONTROL_CW    0b01
@@ -9,7 +9,7 @@ typedef void (*ControlFunction)(uint8_t mode);
 class MenuItem {
 public:
     MenuItem(const char*, RenderFunction, ControlFunction);
-    bool render(char[], size_t);
+    bool render(char buffer[][21], size_t rows);
     void press();
     void cw();
     void ccw();
