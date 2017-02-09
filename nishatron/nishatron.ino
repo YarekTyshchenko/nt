@@ -64,7 +64,7 @@ void EditTapeControl(uint8_t mode) {
 bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
     strcpy(foo, "  Play Tape  Yo     ");
     MenuItem *menuItem = (MenuItem*) _menuItem;
-    if (menuItem->pressed) {
+    if (menuItem->pressed) { //@TODO: This can be refactored into a control callback
         menuItem->pressed = false;
         return false;
     }

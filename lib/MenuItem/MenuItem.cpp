@@ -10,14 +10,15 @@ MenuItem::MenuItem(const char *_name, RenderFunction _renderCallback, ControlFun
 
 void MenuItem::press() {
     pressed = true;
+    controlCallback(CONTROL_PRESS);
 }
 
 void MenuItem::cw() {
-
+    controlCallback(CONTROL_CW);
 }
 
 void MenuItem::ccw() {
-
+    controlCallback(CONTROL_CCW);
 }
 
 bool MenuItem::render(char buffer[], size_t size) {
