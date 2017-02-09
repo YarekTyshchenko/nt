@@ -42,7 +42,6 @@ void setup() {
         new MenuItem("  Dummy 6           ", NoopRender, NoopControl),
     };
 
-    // -1 because we are working with 0 indexed cursor
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
     menu->preselect(2, true);
 
