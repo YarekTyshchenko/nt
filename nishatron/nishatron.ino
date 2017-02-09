@@ -30,8 +30,8 @@ void setup() {
     tape = new Tape();
 
     MenuItem* items[] = {
-        new MenuItem("  Edit Tape         ", EditTapeRender), // Should call Tape::render() when pressed
-        new MenuItem("  Play Tape         ", PlayTapeRender), // Should call Tape::play() and exit
+        new MenuItem("  Edit Tape         ", EditTapeRender, EditTapeControl), // Should call Tape::render() when pressed
+        new MenuItem("  Play Tape         ", PlayTapeRender, PlayTapeControl), // Should call Tape::play() and exit
     };
 
     menu = new Menu(items, 1);
@@ -49,6 +49,18 @@ bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
     return !tape->shouldExit();
 };
 
+void EditTapeControl(uint8_t mode) {
+    if (mode == CONTROL_CW) {
+        tape->right();
+    } else if (mode == CONTROL_CCW) {
+        tape->left();
+    } else if (mode == CONTROL_PRESS) {
+        tape->press();
+    } else {
+        // Error ?
+    }
+}
+
 bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
     strcpy(foo, "  Play Tape  Yo     ");
     MenuItem *menuItem = (MenuItem*) _menuItem;
@@ -58,6 +70,12 @@ bool PlayTapeRender(void *_menuItem, char foo[], size_t size) {
     }
     return true;
 };
+
+void PlayTapeControl(uint8_t mode) {
+    if (mode == CONTROL_PRESS) {
+        tape->play();
+    }
+}
 
 bool state = false;
 char buffer[][20] = {
