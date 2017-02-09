@@ -43,8 +43,7 @@ void setup() {
 
 // Bool = more output required
 bool EditTapeRender(void *_menuItem, char foo[], size_t size) {
-    // String tapeBuffer = tape->render();
-    // tapeBuffer.toCharArray(foo, 21);
+    tape->render(foo);
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -56,7 +55,7 @@ void EditTapeControl(uint8_t mode) {
     } else if (mode == CONTROL_CCW) {
         tape->left();
     } else if (mode == CONTROL_PRESS) {
-        //tape->press();
+        tape->press();
     } else {
         // Error ?
     }
@@ -90,10 +89,7 @@ char b2[42] = "11111111111111111111"
               "22222222222222222222";
 void loop() {
     lcd.setCursor(0, 0);
-    tape->render(b0);
-    //lcd.print(tape->render()); // This crashes it
-    //String tapeBuffer = tape->render();
-    //tapeBuffer.toCharArray(b2, 21);
+    //lcd.print(tape->render());
 
     lcd.print(b0);
 //    lcd.print(tape.render());
