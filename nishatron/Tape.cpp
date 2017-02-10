@@ -1,7 +1,7 @@
 #include "Tape.h"
 #include <NewTone.h>
 
-#define MAX_TAPE_SIZE 300
+#define MAX_TAPE_SIZE 1500
 #define SCREEN_SIZE 20
 
 char TAPE[MAX_TAPE_SIZE] = {};

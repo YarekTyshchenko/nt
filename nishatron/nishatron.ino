@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "Tape.h"
 #include <NewTone.h>
+#include <MemoryFree.h>
 
 WinstarOLED lcd;
 Rotary rotary = Rotary(2, 3);
@@ -21,7 +22,7 @@ void rotate() {
 }
 
 void setup() {
-    //Serial.begin(9600);
+    // Serial.begin(9600);
 
     lcd.reset();
     lcd.begin(16, 2);
@@ -62,7 +63,8 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
     const char *note = tape->noteName(tape->noteAt(position));
-    snprintf(buffer[1], 21, "Head: %d Note: %s ", position, note);
+    //snprintf(buffer[1], 21, "Head: %d Note: %s ", position, note);
+    snprintf(buffer[1], 21, "Memory: %d          ", freeMemory());
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -83,7 +85,9 @@ void EditTapeControl(uint8_t mode) {
 
 bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     // @TODO: Render the tape playing
-    strcpy(buffer[0], "  Play Tape  Yo     ");
+    // tape->startPlayback()
+    // return !tape->isPlaybackFinished();
+
     MenuItem *menuItem = (MenuItem*) _menuItem;
     if (menuItem->pressed) { //@TODO: This can be refactored into a control callback
         menuItem->pressed = false;
