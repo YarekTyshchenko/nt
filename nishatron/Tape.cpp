@@ -61,10 +61,9 @@ void Tape::advancePlayhead() {
     if (note > 0) {
         unsigned long frequency = frequencies[(size_t)note];
         NewTone(4, frequency, length);
-        // Set a future delay
-        _toneOffAt = millis() + length;
     }
-    delay(length); // @TODO: Convert to timeout?
+    // Set a future delay
+    _toneOffAt = millis() + length;
 }
 
 void Tape::stop() {
