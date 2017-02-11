@@ -3,7 +3,7 @@
 
 class Menu {
 public:
-    Menu(MenuItem[], size_t);
+    Menu(MenuItem*[], size_t);
     void render(char[][21], size_t size);
     void up();
     void down();
@@ -11,9 +11,8 @@ public:
     void preselect(size_t position, bool enter);
 private:
     volatile uint8_t cursor;
-    MenuItem *menu;
+    MenuItem** menu;
     size_t menuRowCount;
     volatile bool enterMenuItem;
-    size_t viewportOffset;
     size_t viewportStart;
 };

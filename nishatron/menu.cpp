@@ -1,8 +1,7 @@
 #include "menu.h"
 
-Menu::Menu(MenuItem _menu[], size_t _size) {
+Menu::Menu(MenuItem* _menu[], size_t _size) {
     // Viewport in Rows
-    viewportOffset = 0;
     viewportStart = 0;
     // Cursor vertical
     menu = _menu;
@@ -19,9 +18,9 @@ void Menu::preselect(size_t position, bool enter) {
 void Menu::render(char buffer[][21], size_t viewportSize) {
     // Is menu item activated?
     if (enterMenuItem) {
-        MenuItem item = menu[cursor];
+        MenuItem* item = menu[cursor];
         // Does this render require more rendering?
-        enterMenuItem = item.render(buffer, sizeof(buffer) / sizeof(buffer[0]));
+        enterMenuItem = item->render(buffer, sizeof(buffer) / sizeof(buffer[0]));
         return;
     }
 
@@ -33,15 +32,15 @@ void Menu::render(char buffer[][21], size_t viewportSize) {
 
     // Render current selection
     for (size_t i = 0; i < viewportSize; i++) {
-        MenuItem it = menu[i+viewportStart];
+        MenuItem* it = menu[i+viewportStart];
         bool selected = (i+viewportStart == cursor);
-        it.renderName(buffer[i], selected);
+        it->renderName(buffer[i], selected);
     }
 }
 
 void Menu::up() {
     if (enterMenuItem) {
-        menu[cursor].ccw();
+        menu[cursor]->ccw();
         return;
     }
     if (cursor > 0)
@@ -50,7 +49,7 @@ void Menu::up() {
 
 void Menu::down() {
     if (enterMenuItem) {
-        menu[cursor].cw();
+        menu[cursor]->cw();
         return;
     }
     if (cursor < menuRowCount-1)
@@ -59,8 +58,8 @@ void Menu::down() {
 
 void Menu::press() {
     if (enterMenuItem) {
-        MenuItem item = menu[cursor];
-        item.press();
+        MenuItem* item = menu[cursor];
+        item->press();
         return;
     }
     enterMenuItem = true;

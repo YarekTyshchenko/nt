@@ -24,22 +24,22 @@ void rotate() {
 void setup() {
     //Serial.begin(9600);
 
-    lcd.reset();
+    lcd.reset(100); // Default is 2 seconds
     lcd.begin(16, 2);
     lcd.clear();
 
     tape = new Tape();
 
-    MenuItem items[] = {
-        MenuItem("Settings", NoopRender, NoopControl),
-        MenuItem("BPM", NoopRender, NoopControl),
-        MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
-        MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
-        MenuItem(MemoryNameRender, NoopRender, NoopControl),
+    MenuItem* items[] = {
+        new MenuItem("Settings", NoopRender, NoopControl),
+        new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
+        new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
+        new MenuItem("BPM", NoopRender, NoopControl),
+        new MenuItem(MemoryNameRender, NoopRender, NoopControl),
     };
 
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
-    menu->preselect(2, true);
+    menu->preselect(1, true);
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
