@@ -10,6 +10,7 @@ public:
     void render(char buffer[]);
     size_t headPosition();
     char noteAt(size_t position);
+    void playNoteAtCursor(size_t position, unsigned long length);
     const char* noteName(size_t note);
     void play();
     void stop();

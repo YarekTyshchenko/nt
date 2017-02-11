@@ -50,18 +50,23 @@ void Tape::play() {
     _playback = true;
 }
 
-void Tape::advancePlayhead() {
-    if (millis() < _toneOffAt) {
-        return;
-    }
-    char note = TAPE[_headPosition];
-    this->right();
-    // Play a tone
-    unsigned long length = 100;
+void Tape::playNoteAtCursor(size_t position, unsigned long length) {
+    char note = TAPE[position];
     if (note > 0) {
         unsigned long frequency = frequencies[(size_t)note];
         NewTone(4, frequency, length);
     }
+}
+
+void Tape::advancePlayhead() {
+    if (millis() < _toneOffAt) {
+        return;
+    }
+    unsigned long length = 100;
+    // Play a tone
+    this->playNoteAtCursor(_headPosition, length);
+    // Shift tape right
+    this->right();
     // Set a future delay
     _toneOffAt = millis() + length;
 }

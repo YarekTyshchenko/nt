@@ -106,9 +106,11 @@ void PlayTapeControl(uint8_t mode) {
     if (mode == CONTROL_CW) {
         playing = false;
         tape->right();
+        tape->playNoteAtCursor(tape->headPosition(), 100);
     } else if (mode == CONTROL_CCW) {
         playing = false;
         tape->left();
+        tape->playNoteAtCursor(tape->headPosition(), 100);
     } else if (mode == CONTROL_PRESS) {
         // Reset playback head on first activation
         playing = !playing;
