@@ -55,7 +55,6 @@ bool NoopRender(void *_menuItem, char buffer[][21], size_t rows) {
 }
 
 void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
-    MenuItem *menuItem = (MenuItem*) _menuItem;
     snprintf(buffer, 21, "  Free ram: %-6d", freeMemory());
     if (selected) {
         buffer[0] = '>';
@@ -70,9 +69,10 @@ void NoopControl(uint8_t mode) {
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
-    const char *note = tape->noteName(tape->noteAt(position));
-    //snprintf(buffer[1], 21, "Head: %d Note: %s ", position, note);
-    snprintf(buffer[1], 21, "Memory: %d          ", freeMemory());
+    size_t n = (size_t) tape->noteAt(position);
+    const char *note = tape->noteName(6);
+    snprintf(buffer[1], 21, "Head: %d Note: %d, %s   ", position, n, note);
+    //snprintf(buffer[1], 21, "Memory: %d Note: %s", position, n);
 
     // Should exit -> is more output required
     return !tape->shouldExit();

@@ -7,7 +7,7 @@ typedef void (*NameFunction)(void*, char[21], bool selected);
 #define CONTROL_CCW   0b10
 #define CONTROL_PRESS 0b11
 
-static void defaultCallback(void*, char[21]);
+void defaultCallback(void*, char[21]);
 
 class MenuItem {
 public:
