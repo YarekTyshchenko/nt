@@ -35,10 +35,10 @@ void Menu::render(char buffer[][21], size_t viewportSize) {
     for (size_t i = 0; i < viewportSize; i++) {
         // render everything
         MenuItem *it = menu[i+viewportStart];
-        strcpy(buffer[i], it->name);
-        if (i+viewportStart == cursor) {
-            buffer[i][0] = '>'; // Blank the rest of the row too.
-        }
+        //snprintf(buffer[i], 21, "  %-18s", it->name);
+        bool selected = (i+viewportStart == cursor);
+        it->renderName(buffer[i], selected);
+        //strcpy(buffer[i], it->name);
     }
 }
 

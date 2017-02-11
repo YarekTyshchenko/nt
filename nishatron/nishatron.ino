@@ -31,16 +31,16 @@ void setup() {
     tape = new Tape();
 
     MenuItem* items[] = {
-        new MenuItem("  Settings          ", NoopRender, NoopControl),
-        new MenuItem("  BPM               ", NoopRender, NoopControl),
-        new MenuItem("  Edit Tape         ", EditTapeRender, EditTapeControl),
-        new MenuItem("  Play Tape         ", PlayTapeRender, PlayTapeControl),
-        new MenuItem("  Dummy 1           ", NoopRender, NoopControl),
-        new MenuItem("  Dummy 2           ", NoopRender, NoopControl),
-        new MenuItem("  Dummy 3           ", NoopRender, NoopControl),
-        new MenuItem("  Dummy 4           ", NoopRender, NoopControl),
-        new MenuItem("  Dummy 5           ", NoopRender, NoopControl),
-        new MenuItem("  Dummy 6           ", NoopRender, NoopControl),
+        new MenuItem("Settings", NoopRender, NoopControl),
+        new MenuItem("BPM", NoopRender, NoopControl),
+        new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
+        new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
+        new MenuItem(MemoryNameRender, NoopRender, NoopControl),
+        new MenuItem("Dummy 2", NoopRender, NoopControl),
+        new MenuItem("Dummy 3", NoopRender, NoopControl),
+        new MenuItem("Dummy 4", NoopRender, NoopControl),
+        new MenuItem("Dummy 5", NoopRender, NoopControl),
+        new MenuItem("Dummy 6", NoopRender, NoopControl),
     };
 
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
@@ -52,6 +52,14 @@ void setup() {
 
 bool NoopRender(void *_menuItem, char buffer[][21], size_t rows) {
     return false;
+}
+
+void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
+    MenuItem *menuItem = (MenuItem*) _menuItem;
+    snprintf(buffer, 21, "  Free ram: %-6d", freeMemory());
+    if (selected) {
+        buffer[0] = '>';
+    }
 }
 
 void NoopControl(uint8_t mode) {
