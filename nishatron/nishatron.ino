@@ -71,7 +71,11 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     size_t position = tape->headPosition();
     size_t n = (size_t) tape->noteAt(position);
     const char *note = tape->noteName(n);
-    snprintf(buffer[1], 21, "[%d] %s        ", position, note);
+    if (tape->isEdittingNote()) {
+        snprintf(buffer[1], 21, "[%d] Note: %s  #%d   ", position, note, n);
+    } else {
+        snprintf(buffer[1], 21, "Head: %d Note: %s  ", position, note);
+    }
     //snprintf(buffer[0], 21, "Memory: %d", freeMemory());
 
     // Should exit -> is more output required
@@ -85,6 +89,10 @@ void EditTapeControl(uint8_t mode) {
         tape->left();
     } else if (mode == CONTROL_PRESS) {
         tape->press();
+    }
+
+    if (!tape->isEdittingNote() && (mode == CONTROL_CW || mode == CONTROL_CCW)) {
+        tape->playNoteAtCursor(tape->headPosition(), 100);
     }
 }
 

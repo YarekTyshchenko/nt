@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Note.h"
 
 class Tape {
 public:
@@ -16,17 +17,19 @@ public:
     void stop();
     bool isPlaying();
     void reset();
+    bool isEdittingNote();
 
     bool shouldExit();
     volatile size_t viewportStart; // Move this to private
     void advancePlayhead();
 private:
+    size_t playableLength;
     unsigned long _toneOffAt;
     bool _playback;
     bool _shouldExit;
     volatile bool movingHead;
     volatile size_t _headPosition;
-    char renderNote(char note);
+    char renderNote(Note *note);
     void noteIncrementPitch(size_t position);
     void noteDecrementPitch(size_t position);
 };

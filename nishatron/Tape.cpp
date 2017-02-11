@@ -6,24 +6,6 @@
 
 char TAPE[MAX_TAPE_SIZE] = {};
 
-const unsigned int frequencies[] = {
-    31,33,35,37,39,41,44,46,49,52,55,58,62,65,69,73,78,82,87,93,98,104,110,
-    117,123,131,139,147,156,165,175,185,196,208,220,233,247,262,277,294,311,
-    330,349,370,392,415,440,466,494,523,554,587,622,659,698,740,784,831,880,
-    932,988,1047,1109,1175,1245,1319,1397,1480,1568,1661,1760,1865,1976,2093,
-    2217,2349,2489,2637,2794,2960,3136,3322,3520,3729,3951,4186,4435,4699,4978
-};
-const char* notes[] = {
-    "B 0","C 1","CS1","D 1","DS1","E 1","F 1","FS1","G 1","GS1","A 1","AS1",
-    "B 1","C 2","C#2","D 2","D#2","E 2","F 2","F#2","G 2","G#2","A 2","A#2",
-    "B 2","C 3","C#3","D 3","D#3","E 3","F 3","F#3","G 3","G#3","A 3","A#3",
-    "B 3","C 4","C#4","D 4","D#4","E 4","F 4","F#4","G 4","G#4","A 4","A#4",
-    "B 4","C 5","C#5","D 5","D#5","E 5","F 5","F#5","G 5","G#5","A 5","A#5",
-    "B 5","C 6","C#6","D 6","D#6","E 6","F 6","F#6","G 6","G#6","A 6","A#6",
-    "B 6","C 7","C#7","D 7","D#7","E 7","F 7","F#7","G 7","G#7","A 7","A#7",
-    "B 7","C 8","C#8","D 8","D#8"
-};
-
 Tape::Tape() {
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
@@ -31,14 +13,7 @@ Tape::Tape() {
     _headPosition = 0;
     _playback = false;
     _toneOffAt = 0;
-
-    // Populate tape with random notes
-    for (size_t i = 0; i < MAX_TAPE_SIZE; i++) {
-        char randomNote = (char) random(0,sizeof(frequencies) / sizeof(frequencies[0]));
-        if (randomNote > 10 && randomNote < 60) {
-            TAPE[i] = randomNote;
-        }
-    }
+    playableLength = 0;
 }
 
 void Tape::reset() {
@@ -51,10 +26,9 @@ void Tape::play() {
 }
 
 void Tape::playNoteAtCursor(size_t position, unsigned long length) {
-    char note = TAPE[position];
-    if (note > 0) {
-        unsigned long frequency = frequencies[(size_t)note];
-        NewTone(4, frequency, length);
+    Note *note = new Note(TAPE[position]);
+    if (note->on()) {
+        NewTone(4, note->freq(), length);
     }
 }
 
@@ -80,22 +54,21 @@ bool Tape::isPlaying() {
 }
 
 size_t Tape::headPosition() {
-    size_t position = _headPosition;
-    return position;
+    return _headPosition;
 }
 
 void Tape::noteIncrementPitch(size_t position) {
-    if ((TAPE[position]) < 88)
-        TAPE[position]++;
-    size_t f = TAPE[position];
+    Note *note = new Note(TAPE[position]);
+    TAPE[position] = note->increment(); //@TODO: Refactor this not to write needlessly
 
-    NewTone(4, frequencies[f], 1000);
+    NewTone(4, note->freq(), 1000);
 }
 
 void Tape::noteDecrementPitch(size_t position) {
-    if (TAPE[position] > 0)
-        TAPE[position]--;
-    NewTone(4, frequencies[(size_t)TAPE[position]], 1000);
+    Note *note = new Note(TAPE[position]);
+    TAPE[position] = note->decrement();
+
+    NewTone(4, note->freq(), 1000);
 }
 
 bool Tape::shouldExit() {
@@ -104,6 +77,10 @@ bool Tape::shouldExit() {
         return true;
     }
     return false;
+}
+
+bool Tape::isEdittingNote() {
+    return !movingHead;
 }
 
 // Work out viewport from head position, so playback works
@@ -147,19 +124,21 @@ void Tape::press() {
 }
 
 
-char Tape::renderNote(char note) {
-    if (note > 0) {
+char Tape::renderNote(Note *note) {
+    if (note->on()) {
         return 'o';
     }
     return '-';
 }
 
 char Tape::noteAt(size_t position) {
+    // return new Note(TAPE[position]); // @TODO: reafctor this
     return TAPE[position];
 }
 
 const char* Tape::noteName(size_t note) {
-    return notes[note];
+    Note *n = new Note(note);
+    return n->name();
 }
 
 // Render SCREEN_SIZE of TAPE starting from viewportStart
@@ -176,9 +155,9 @@ void Tape::render(char screenBuffer[]) {
             screenBuffer[i] = 'X';
             break;
         }
-        char note = TAPE[i + viewportStart];
+        Note *note = new Note(TAPE[i + viewportStart]);
         // display note
-        if (note > 0) {
+        if (note->on()) {
             screenBuffer[i] = renderNote(note);
         }
     }
