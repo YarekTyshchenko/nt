@@ -34,6 +34,8 @@ void setup() {
         new MenuItem("Settings", NoopRender, NoopControl),
         new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
         new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
+        new MenuItem("Save Tape", SaveTapeRender, NoopControl),
+        new MenuItem("Clear Tape", ClearTapeRender, NoopControl),
         new MenuItem("BPM", NoopRender, NoopControl),
         new MenuItem(MemoryNameRender, NoopRender, NoopControl),
     };
@@ -49,6 +51,44 @@ bool NoopRender(void *_menuItem, char buffer[][21], size_t rows) {
     return false;
 }
 
+void NoopControl(uint8_t mode) {
+
+}
+
+bool ClearTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
+    MenuItem *item = (MenuItem *) _menuItem;
+    if (item->pressed) {
+        item->pressed = false;
+        // Save
+        tape->clearTape();
+        return false;
+    }
+
+    strncpy(buffer[0], "    Click again     ", 21);
+    strncpy(buffer[1], "   to erase Tape    ", 21);
+    return true;
+}
+
+bool SaveTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
+    MenuItem *item = (MenuItem *) _menuItem;
+    if (item->pressed) {
+        item->pressed = false;
+        // Save
+        tape->saveTape();
+        return false;
+    }
+
+    strncpy(buffer[0], "    Click again     ", 21);
+    strncpy(buffer[1], "   to save Tape     ", 21);
+    // If save isn't started
+    // Start Save
+    // yield for display
+    // Loop through the tape
+        // Read current EEPROM cell
+        // If its different, update
+    return true;
+}
+
 void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
     snprintf(buffer, 21, "  RAM free %-4d B", freeMemory());
     if (selected) {
@@ -56,22 +96,19 @@ void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
     }
 }
 
-void NoopControl(uint8_t mode) {
-
-}
-
 // Bool = more output required
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
-    Note note = tape->noteAt(position);
+    Note* note = tape->noteAt(position);
 
     if (tape->isEdittingNote()) {
-        snprintf(buffer[1], 21, "Note: %s %d ", note.name(), note.id());
+        snprintf(buffer[1], 21, "Note: %s %d ", note->name(), note->id());
     } else {
-        snprintf(buffer[1], 21, "  %s at [%3d] ", note.name(), position, note.id());
+        snprintf(buffer[1], 21, "  %s at [%3d] ", note->name(), position);
     }
-    snprintf(buffer[0], 21, "Memory: %d", freeMemory());
+    delete note;
+    //snprintf(buffer[0], 21, "Memory: %d", freeMemory());
 
     // Should exit -> is more output required
     return !tape->shouldExit();

@@ -10,14 +10,16 @@ public:
     // One line render
     void render(char buffer[]);
     size_t headPosition();
-    Note noteAt(size_t position);
+    Note* noteAt(size_t position);
     void playNoteAtCursor(size_t position, unsigned long length);
-    const char* noteName(size_t note);
     void play();
     void stop();
     bool isPlaying();
     void reset();
     bool isEdittingNote();
+
+    void clearTape();
+    void saveTape();
 
     bool shouldExit();
     volatile size_t viewportStart; // Move this to private

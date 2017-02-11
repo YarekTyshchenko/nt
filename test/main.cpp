@@ -62,11 +62,24 @@ void testNoteOff() {
     assert(n->on() == true);
 }
 
+void foo(Note notes[]) {
+    printf("%p\n", (void *)notes);
+    printf("%p\n", (void *)notes);
+}
+
+void testArrayOfObjects() {
+    Note notes[] = {
+        Note(0)
+    };
+    foo(notes);
+}
+
 int main(int argc, char const *argv[]) {
     /* code */
     printf("Running test framework\n");
     testNote();
     testNotePitch();
     testNoteOff();
+    testArrayOfObjects();
     return 0;
 }

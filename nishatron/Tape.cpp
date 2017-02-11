@@ -1,5 +1,6 @@
 #include "Tape.h"
 #include <NewTone.h>
+#include <EEPROM.h>
 
 #define MAX_TAPE_SIZE 100
 #define SCREEN_SIZE 20
@@ -8,7 +9,7 @@ unsigned char TAPE[MAX_TAPE_SIZE] = {};
 
 Tape::Tape() {
     // Init the tape to Note 178 -- Off
-    memset(TAPE, 178, MAX_TAPE_SIZE);
+    memset(TAPE, 178, MAX_TAPE_SIZE); //@TODO: Initialise from EEPROM
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
     _shouldExit = false;
@@ -16,6 +17,27 @@ Tape::Tape() {
     _playback = false;
     _toneOffAt = 0;
     playableLength = 0;
+}
+
+void Tape::clearTape() {
+    for (size_t address = 0; address < MAX_TAPE_SIZE; address++) {
+        byte value = EEPROM.read(address);
+        // Compare
+        if (value != NOTE_NULL) {
+            EEPROM.write(address, NOTE_NULL);
+        }
+    }
+}
+
+void Tape::saveTape() {
+    for (size_t address = 0; address < MAX_TAPE_SIZE; address++) {
+        byte value = EEPROM.read(address);
+        unsigned char note = TAPE[address];
+        // Compare
+        if (value != note) {
+            EEPROM.write(address, note);
+        }
+    }
 }
 
 void Tape::reset() {
@@ -126,13 +148,8 @@ void Tape::press() {
 }
 
 
-Note Tape::noteAt(size_t position) {
-    return Note(TAPE[position]);
-}
-
-const char* Tape::noteName(size_t note) {
-    Note n = Note(note);
-    return n.name();
+Note* Tape::noteAt(size_t position) {
+    return new Note(TAPE[position]);
 }
 
 char Tape::renderNote(Note *note) {
@@ -144,11 +161,12 @@ char Tape::renderNote(Note *note) {
 
 // Render SCREEN_SIZE of TAPE starting from viewportStart
 void Tape::render(char screenBuffer[]) {
-    return;
     // loop for screen width
     for (size_t i = 0; i < SCREEN_SIZE; i++) { // @TODO: Shouldn't that be 21?
         if ((i + viewportStart) % 4 == 0) {
             screenBuffer[i] = '|';
+        } else {
+            screenBuffer[i] = ' ';
         }
 
         if (i + viewportStart > MAX_TAPE_SIZE-1) {

@@ -18,7 +18,6 @@ static const char* notes[] = {
     "B 7","C 8","C#8","D 8","D#8"
 };
 
-#define NOTE_NULL 178
 /**
  * @TODO:
     cousteau> yarekt, if you can do with 85 notes (that's 7 octaves including both C at each end), you could have 3
@@ -61,7 +60,12 @@ unsigned char Note::id() {
     return note;
 }
 
+// @TODO: Refactor note hanlding 1) Delete note 2) modulo 88 + /88 3) Bulk change
 unsigned char Note::increment() {
+    if (! this->on()) {
+        note = 0;
+        return note;
+    }
     if (note < 88) {
         return ++note;
     }
@@ -73,6 +77,10 @@ unsigned char Note::increment() {
 }
 
 unsigned char Note::decrement() {
+    if (! this->on()) {
+        note = 88;
+        return note;
+    }
     if (note > 89) {
         return --note;
     }

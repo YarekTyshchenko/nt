@@ -1,3 +1,5 @@
+#define NOTE_NULL 178
+
 class Note {
 public:
     Note(unsigned char);
