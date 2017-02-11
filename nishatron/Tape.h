@@ -12,10 +12,16 @@ public:
     char noteAt(size_t position);
     const char* noteName(size_t note);
     void play();
+    void stop();
+    bool isPlaying();
+    void reset();
 
     bool shouldExit();
     volatile size_t viewportStart; // Move this to private
+    void advancePlayhead();
 private:
+    unsigned long _toneOffAt;
+    bool _playback;
     bool _shouldExit;
     volatile bool movingHead;
     volatile size_t _headPosition;

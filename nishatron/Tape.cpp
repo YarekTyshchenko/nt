@@ -29,19 +29,50 @@ Tape::Tape() {
     viewportStart = 0; // Left edge of the view port
     _shouldExit = false;
     _headPosition = 0;
+    _playback = false;
+    _toneOffAt = 0;
+
+    // Populate tape with random notes
+    for (size_t i = 0; i < MAX_TAPE_SIZE; i++) {
+        char randomNote = (char) random(0,sizeof(frequencies) / sizeof(frequencies[0]));
+        if (randomNote > 10 && randomNote < 60) {
+            TAPE[i] = randomNote;
+        }
+    }
+}
+
+void Tape::reset() {
+    _headPosition = 0;
+    viewportStart = 0;
 }
 
 void Tape::play() {
-    for (size_t i = 0; i < sizeof(TAPE) / sizeof(TAPE[0]); i++) {
-        char note = TAPE[i];
-        // Play a tone
-        if (note > 0) {
-            unsigned long frequency = frequencies[(size_t)note];
-            unsigned long length = 100;
-            NewTone(4, frequency, length);
-        }
-        delay(100);
+    _playback = true;
+}
+
+void Tape::advancePlayhead() {
+    if (millis() < _toneOffAt) {
+        return;
     }
+    char note = TAPE[_headPosition];
+    this->right();
+    // Play a tone
+    unsigned long length = 100;
+    if (note > 0) {
+        unsigned long frequency = frequencies[(size_t)note];
+        NewTone(4, frequency, length);
+        // Set a future delay
+        _toneOffAt = millis() + length;
+    }
+    delay(length); // @TODO: Convert to timeout?
+}
+
+void Tape::stop() {
+    _playback = false;
+}
+
+bool Tape::isPlaying() {
+    return _playback;
 }
 
 size_t Tape::headPosition() {
@@ -71,6 +102,7 @@ bool Tape::shouldExit() {
     return false;
 }
 
+// Work out viewport from head position, so playback works
 void Tape::left() {
     if (movingHead) {
         // Exit out of the menu item

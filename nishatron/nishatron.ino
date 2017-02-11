@@ -22,7 +22,7 @@ void rotate() {
 }
 
 void setup() {
-    // Serial.begin(9600);
+    //Serial.begin(9600);
 
     lcd.reset();
     lcd.begin(16, 2);
@@ -55,7 +55,7 @@ bool NoopRender(void *_menuItem, char buffer[][21], size_t rows) {
 }
 
 void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
-    snprintf(buffer, 21, "  Free ram: %-6d", freeMemory());
+    snprintf(buffer, 21, "  RAM free %-4d B", freeMemory());
     if (selected) {
         buffer[0] = '>';
     }
@@ -72,7 +72,7 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     size_t n = (size_t) tape->noteAt(position);
     const char *note = tape->noteName(n);
     snprintf(buffer[1], 21, "[%d] %s        ", position, note);
-    snprintf(buffer[0], 21, "Memory: %d", freeMemory());
+    //snprintf(buffer[0], 21, "Memory: %d", freeMemory());
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -88,22 +88,30 @@ void EditTapeControl(uint8_t mode) {
     }
 }
 
+bool playing = false;
 bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
-    // @TODO: Render the tape playing
-    // tape->startPlayback()
-    // return !tape->isPlaybackFinished();
-
-    MenuItem *menuItem = (MenuItem*) _menuItem;
-    if (menuItem->pressed) { //@TODO: This can be refactored into a control callback
-        menuItem->pressed = false;
+    tape->render(buffer[0]);
+    snprintf(buffer[1], 21, "Playing: [%d]      ", tape->headPosition());
+    if (playing)
+        tape->advancePlayhead();
+    if (tape->headPosition() >= 99) {
+        // Reached the end
+        tape->reset();
         return false;
     }
     return true;
 };
 
 void PlayTapeControl(uint8_t mode) {
-    if (mode == CONTROL_PRESS) {
-        //tape->play();
+    if (mode == CONTROL_CW) {
+        playing = false;
+        tape->right();
+    } else if (mode == CONTROL_CCW) {
+        playing = false;
+        tape->left();
+    } else if (mode == CONTROL_PRESS) {
+        // Reset playback head on first activation
+        playing = !playing;
     }
 }
 
