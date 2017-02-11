@@ -1,7 +1,7 @@
 #include "Tape.h"
 #include <NewTone.h>
 
-#define MAX_TAPE_SIZE 1500
+#define MAX_TAPE_SIZE 100
 #define SCREEN_SIZE 20
 
 char TAPE[MAX_TAPE_SIZE] = {};
@@ -45,7 +45,8 @@ void Tape::play() {
 }
 
 size_t Tape::headPosition() {
-    return _headPosition;
+    size_t position = _headPosition;
+    return position;
 }
 
 void Tape::noteIncrementPitch(size_t position) {
