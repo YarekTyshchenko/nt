@@ -18,6 +18,7 @@ static const char* notes[] = {
     "B 7","C 8","C#8","D 8","D#8"
 };
 
+#define NOTE_NULL 178
 /**
  * @TODO:
     cousteau> yarekt, if you can do with 85 notes (that's 7 octaves including both C at each end), you could have 3
@@ -53,11 +54,14 @@ static const char* notes[] = {
  *  197+ Reserved
  */
 
-Note::Note(unsigned short value) {
+Note::Note(unsigned char value) {
     note = value;
 }
+unsigned char Note::id() {
+    return note;
+}
 
-unsigned short Note::increment() {
+unsigned char Note::increment() {
     if (note < 88) {
         return ++note;
     }
@@ -68,7 +72,7 @@ unsigned short Note::increment() {
     return note;
 }
 
-unsigned short Note::decrement() {
+unsigned char Note::decrement() {
     if (note > 89) {
         return --note;
     }
@@ -89,7 +93,7 @@ unsigned int Note::normalise(unsigned int value) {
 }
 
 bool Note::on() {
-    if (note == 178) {
+    if (note == NOTE_NULL) {
         return false;
     }
     return true;
@@ -100,11 +104,14 @@ unsigned int Note::freq() {
     return frequencies[normalised];
 }
 
-unsigned short Note::volume() {
+unsigned char Note::volume() {
     return 0;
 }
 
 const char* Note::name() {
+    if (! this->on()) {
+        return "---";
+    }
     unsigned int normalised = this->normalise(note);
     return notes[normalised];
 }

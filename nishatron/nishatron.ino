@@ -30,17 +30,12 @@ void setup() {
 
     tape = new Tape();
 
-    MenuItem* items[] = {
-        new MenuItem("Settings", NoopRender, NoopControl),
-        new MenuItem("BPM", NoopRender, NoopControl),
-        new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
-        new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
-        new MenuItem(MemoryNameRender, NoopRender, NoopControl),
-        new MenuItem("Dummy 2", NoopRender, NoopControl),
-        new MenuItem("Dummy 3", NoopRender, NoopControl),
-        new MenuItem("Dummy 4", NoopRender, NoopControl),
-        new MenuItem("Dummy 5", NoopRender, NoopControl),
-        new MenuItem("Dummy 6", NoopRender, NoopControl),
+    MenuItem items[] = {
+        MenuItem("Settings", NoopRender, NoopControl),
+        MenuItem("BPM", NoopRender, NoopControl),
+        MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
+        MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
+        MenuItem(MemoryNameRender, NoopRender, NoopControl),
     };
 
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
@@ -69,14 +64,14 @@ void NoopControl(uint8_t mode) {
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
-    size_t n = (size_t) tape->noteAt(position);
-    const char *note = tape->noteName(n);
+    Note note = tape->noteAt(position);
+
     if (tape->isEdittingNote()) {
-        snprintf(buffer[1], 21, "[%d] Note: %s  #%d   ", position, note, n);
+        snprintf(buffer[1], 21, "Note: %s %d ", note.name(), note.id());
     } else {
-        snprintf(buffer[1], 21, "Head: %d Note: %s  ", position, note);
+        snprintf(buffer[1], 21, "  %s at [%3d] ", note.name(), position, note.id());
     }
-    //snprintf(buffer[0], 21, "Memory: %d", freeMemory());
+    snprintf(buffer[0], 21, "Memory: %d", freeMemory());
 
     // Should exit -> is more output required
     return !tape->shouldExit();
@@ -102,7 +97,7 @@ bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     snprintf(buffer[1], 21, "Playing: [%d]      ", tape->headPosition());
     if (playing)
         tape->advancePlayhead();
-    if (tape->headPosition() >= 99) {
+    if (tape->headPosition() >= 99) { // @TODO: 99 WTF?
         // Reached the end
         tape->reset();
         return false;

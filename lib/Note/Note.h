@@ -1,13 +1,14 @@
 class Note {
 public:
-    Note(unsigned short);
+    Note(unsigned char);
+    unsigned char id();
     bool on();
     unsigned int freq();
-    unsigned short volume();
+    unsigned char volume();
     const char* name();
-    unsigned short increment();
-    unsigned short decrement();
+    unsigned char increment();
+    unsigned char decrement();
 private:
-    unsigned short note;
+    unsigned char note;
     unsigned int normalise(unsigned int value);
 };

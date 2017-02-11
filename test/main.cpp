@@ -26,13 +26,13 @@ void testNote() {
     // No note
     n = new Note(178);
     assert(n->freq() == 31);
-    assert(strcmp(n->name(), "B 0") == 0);
+    assert(strcmp(n->name(), "---") == 0);
 }
 
 void testNotePitch() {
     // Decrement from 0
     Note *n = new Note(0);
-    unsigned short d = n->decrement();
+    unsigned char d = n->decrement();
     assert(d == 0);
     assert(n->freq() == 31);
 

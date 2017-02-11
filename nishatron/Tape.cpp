@@ -4,9 +4,11 @@
 #define MAX_TAPE_SIZE 100
 #define SCREEN_SIZE 20
 
-char TAPE[MAX_TAPE_SIZE] = {};
+unsigned char TAPE[MAX_TAPE_SIZE] = {};
 
 Tape::Tape() {
+    // Init the tape to Note 178 -- Off
+    memset(TAPE, 178, MAX_TAPE_SIZE);
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
     _shouldExit = false;
@@ -26,9 +28,9 @@ void Tape::play() {
 }
 
 void Tape::playNoteAtCursor(size_t position, unsigned long length) {
-    Note *note = new Note(TAPE[position]);
-    if (note->on()) {
-        NewTone(4, note->freq(), length);
+    Note note = Note(TAPE[position]);
+    if (note.on()) {
+        NewTone(4, note.freq(), length);
     }
 }
 
@@ -58,17 +60,17 @@ size_t Tape::headPosition() {
 }
 
 void Tape::noteIncrementPitch(size_t position) {
-    Note *note = new Note(TAPE[position]);
-    TAPE[position] = note->increment(); //@TODO: Refactor this not to write needlessly
+    Note note = Note(TAPE[position]);
+    TAPE[position] = note.increment(); //@TODO: Refactor this not to write needlessly
 
-    NewTone(4, note->freq(), 1000);
+    NewTone(4, note.freq(), 1000);
 }
 
 void Tape::noteDecrementPitch(size_t position) {
-    Note *note = new Note(TAPE[position]);
-    TAPE[position] = note->decrement();
+    Note note = Note(TAPE[position]);
+    TAPE[position] = note.decrement();
 
-    NewTone(4, note->freq(), 1000);
+    NewTone(4, note.freq(), 1000);
 }
 
 bool Tape::shouldExit() {
@@ -124,6 +126,15 @@ void Tape::press() {
 }
 
 
+Note Tape::noteAt(size_t position) {
+    return Note(TAPE[position]);
+}
+
+const char* Tape::noteName(size_t note) {
+    Note n = Note(note);
+    return n.name();
+}
+
 char Tape::renderNote(Note *note) {
     if (note->on()) {
         return 'o';
@@ -131,35 +142,25 @@ char Tape::renderNote(Note *note) {
     return '-';
 }
 
-char Tape::noteAt(size_t position) {
-    // return new Note(TAPE[position]); // @TODO: reafctor this
-    return TAPE[position];
-}
-
-const char* Tape::noteName(size_t note) {
-    Note *n = new Note(note);
-    return n->name();
-}
-
 // Render SCREEN_SIZE of TAPE starting from viewportStart
 void Tape::render(char screenBuffer[]) {
+    return;
     // loop for screen width
     for (size_t i = 0; i < SCREEN_SIZE; i++) { // @TODO: Shouldn't that be 21?
         if ((i + viewportStart) % 4 == 0) {
             screenBuffer[i] = '|';
-        } else {
-            screenBuffer[i] = '-';
         }
 
         if (i + viewportStart > MAX_TAPE_SIZE-1) {
-            screenBuffer[i] = 'X';
+            screenBuffer[i] = 'X'; // Protection against display data outside of range
             break;
         }
         Note *note = new Note(TAPE[i + viewportStart]);
-        // display note
+        //display note
         if (note->on()) {
-            screenBuffer[i] = renderNote(note);
+           screenBuffer[i] = renderNote(note);
         }
+        delete note;
     }
 
     // Display Cursor

@@ -1,6 +1,6 @@
 #include "menu.h"
 
-Menu::Menu(MenuItem* _menu[], size_t _size) {
+Menu::Menu(MenuItem _menu[], size_t _size) {
     // Viewport in Rows
     viewportOffset = 0;
     viewportStart = 0;
@@ -17,12 +17,11 @@ void Menu::preselect(size_t position, bool enter) {
 }
 
 void Menu::render(char buffer[][21], size_t viewportSize) {
-    // Render current selection
-    MenuItem* item = menu[cursor];
     // Is menu item activated?
     if (enterMenuItem) {
+        MenuItem item = menu[cursor];
         // Does this render require more rendering?
-        enterMenuItem = item->render(buffer, sizeof(buffer) / sizeof(buffer[0]));
+        enterMenuItem = item.render(buffer, sizeof(buffer) / sizeof(buffer[0]));
         return;
     }
 
@@ -31,20 +30,18 @@ void Menu::render(char buffer[][21], size_t viewportSize) {
         viewportStart = cursor;
     if (cursor > viewportStart + (viewportSize -1))
         viewportStart = cursor - (viewportSize -1);
-    // Render selections
+
+    // Render current selection
     for (size_t i = 0; i < viewportSize; i++) {
-        // render everything
-        MenuItem *it = menu[i+viewportStart];
-        //snprintf(buffer[i], 21, "  %-18s", it->name);
+        MenuItem it = menu[i+viewportStart];
         bool selected = (i+viewportStart == cursor);
-        it->renderName(buffer[i], selected);
-        //strcpy(buffer[i], it->name);
+        it.renderName(buffer[i], selected);
     }
 }
 
 void Menu::up() {
     if (enterMenuItem) {
-        menu[cursor]->ccw();
+        menu[cursor].ccw();
         return;
     }
     if (cursor > 0)
@@ -53,7 +50,7 @@ void Menu::up() {
 
 void Menu::down() {
     if (enterMenuItem) {
-        menu[cursor]->cw();
+        menu[cursor].cw();
         return;
     }
     if (cursor < menuRowCount-1)
@@ -62,8 +59,8 @@ void Menu::down() {
 
 void Menu::press() {
     if (enterMenuItem) {
-        MenuItem* item = menu[cursor];
-        item->press();
+        MenuItem item = menu[cursor];
+        item.press();
         return;
     }
     enterMenuItem = true;
