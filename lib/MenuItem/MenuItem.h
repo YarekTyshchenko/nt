@@ -1,3 +1,6 @@
+#ifndef MENUITEM_H
+#define MENUITEM_H
+
 #include <Arduino.h>
 typedef bool (*RenderFunction)(void*, char[][21], size_t rows);
 typedef void (*ControlFunction)(uint8_t mode);
@@ -26,3 +29,4 @@ private:
     ControlFunction controlCallback;
     NameFunction nameCallback;
 };
+#endif

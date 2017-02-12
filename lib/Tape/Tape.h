@@ -1,3 +1,6 @@
+#ifndef TAPE_H
+#define TAPE_H
+
 #include <Arduino.h>
 #include "Note.h"
 
@@ -37,3 +40,4 @@ private:
     void noteIncrementPitch(size_t position);
     void noteDecrementPitch(size_t position);
 };
+#endif

@@ -1,15 +1,17 @@
+#include <MemoryFree.h>
 #include <WinstarOLED.h>
 #include <LiquidCrystal.h>
 #include "Rotary.h"
 #include "menu.h"
 #include "Tape.h"
+#include "EditMachine.h"
 #include <NewTone.h>
-#include <MemoryFree.h>
 
 WinstarOLED lcd;
 Rotary rotary = Rotary(2, 3);
 Tape *tape;
 Menu *menu;
+EditMachine *editMachine;
 
 // rotate is called anytime the rotary inputs change state.
 void rotate() {
@@ -29,14 +31,14 @@ void setup() {
     lcd.clear();
 
     tape = new Tape();
+    editMachine = new EditMachine(tape);
 
     MenuItem* items[] = {
-        new MenuItem("Settings", NoopRender, NoopControl),
         // @TODO: Choose note -> start selection -> end selection
         new MenuItem("Bulk Apply", NoopRender, NoopControl),
         // @TODO: Move tape and stuff
-        new MenuItem("Edit Tape", EditTapeRender, NoopControl),
-        new MenuItem("Place Notes", EditTapeRender, EditTapeControl),
+        new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
+        new MenuItem("Place Notes", PlaceNotesRender, PlaceNotesControl),
         new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
         new MenuItem("Save Tape", SaveTapeRender, NoopControl),
         new MenuItem("Clear Tape", ClearTapeRender, NoopControl),
@@ -94,8 +96,19 @@ void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
     }
 }
 
-// Place Notes
+// Edit Tape
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
+    editMachine->render(buffer);
+    return !tape->shouldExit();
+}
+
+void EditTapeControl(uint8_t mode) {
+    //@TODO: Implement hold?
+    editMachine->control(mode);
+}
+
+// Place Notes
+bool PlaceNotesRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
     Note* note = tape->noteAt(position);
@@ -112,7 +125,7 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     return !tape->shouldExit();
 };
 
-void EditTapeControl(uint8_t mode) {
+void PlaceNotesControl(uint8_t mode) {
     if (mode == CONTROL_CW) {
         tape->right();
     } else if (mode == CONTROL_CCW) {

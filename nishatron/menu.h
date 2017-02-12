@@ -1,3 +1,6 @@
+#ifndef MENU_H
+#define MENU_H
+
 #include <Arduino.h>
 #include <MenuItem.h>
 
@@ -16,3 +19,4 @@ private:
     volatile bool enterMenuItem;
     size_t viewportStart;
 };
+#endif

@@ -1,3 +1,6 @@
+#ifndef NOTE_H
+#define NOTE_H
+
 #define NOTE_NULL 178
 #define NOTE_NULL_HALF_VOLUME 179
 
@@ -15,3 +18,4 @@ private:
     unsigned char note;
     unsigned int pitch(unsigned int value);
 };
+#endif

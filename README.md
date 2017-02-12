@@ -4,6 +4,7 @@ Todo:
 - Tape Editing Menu
     - Something to make shifting things on tape easier
     - Scroll -> Drag Selection -> Menu: Move/Copy/Set/Clear/Cancel -> Scroll to placement
+                                                   \->Select Note-/
 - Setting for BPM + Save to EEPROM
     - First byte can be config for track + name
 - Store more tracks in SPI EEPROM
