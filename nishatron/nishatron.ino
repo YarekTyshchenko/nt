@@ -59,6 +59,7 @@ void NoopControl(uint8_t mode) {
 
 }
 
+// Tape Save and Clear
 bool ClearTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
     MenuItem *item = (MenuItem *) _menuItem;
     if (item->pressed) {
@@ -85,6 +86,7 @@ bool SaveTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
     return true;
 }
 
+// Ram display
 void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
     snprintf(buffer, 21, "  RAM free %-4d B", freeMemory());
     if (selected) {
@@ -92,7 +94,7 @@ void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
     }
 }
 
-// Bool = more output required
+// Place Notes
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
     size_t position = tape->headPosition();
@@ -124,6 +126,7 @@ void EditTapeControl(uint8_t mode) {
     }
 }
 
+// Tape playback
 bool playing = false;
 bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
