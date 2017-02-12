@@ -8,6 +8,11 @@
 
 #define MENU_NOTE_MAX 88
 #define LAST_MENU_ITEM_INDEX 4
+#define MENU_MOVE   0
+#define MENU_COPY   1
+#define MENU_SET    2
+#define MENU_CLEAR  3
+#define MENU_CANCEL 4
 static const char* menu[] = { //@TODO: Put into Progmem
     "Move",
     "Copy",
@@ -21,6 +26,8 @@ EditMachine::EditMachine(Tape *_tape) {
     state = EM_SCROLL;
     menuCursor = 0;
     menuViewportStart = 0;
+    selectionStart = 0;
+    selectionEnd = 0;
 }
 
 void EditMachine::control(uint8_t mode) {
@@ -28,13 +35,26 @@ void EditMachine::control(uint8_t mode) {
         switch (state) {
             case EM_SCROLL:
             state = EM_SELECT;
+            selectionStart = tape->headPosition();
             break;
             case EM_SELECT:
             state = EM_MENU;
+            selectionEnd = tape->headPosition();
+            menuCursor = 0;
+            menuViewportStart = 0;
             break;
             case EM_MENU:
-            // if menu selected set note, redirect to EM_NOTE, otherwise:
+            // if menu selected set note, redirect to EM_NOTE
+            if (menuCursor == MENU_SET) {
+                state = EM_NOTE;
             // if menu clear -> perform and go straight to EM_SCROLL
+            } else if (menuCursor == MENU_CLEAR) {
+                state = EM_SCROLL;
+            } else if (menuCursor == MENU_CANCEL) {
+                state = EM_SCROLL;
+                // Reset selection;
+                selectionStart = selectionEnd = 0;
+            }
             case EM_NOTE: // Optional Note placement menu
             state = EM_PLACE;
             break;
