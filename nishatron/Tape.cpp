@@ -111,9 +111,11 @@ bool Tape::isEdittingNote() {
 // Work out viewport from head position, so playback works
 void Tape::left() {
     if (movingHead) {
-        // Exit out of the menu item
+        // Exit out of the Tape
         if (_headPosition <= 0) {
             _shouldExit = true;
+            this->reset();
+            return;
         }
 
         if (_headPosition > 0)
@@ -131,6 +133,13 @@ void Tape::left() {
 
 void Tape::right() {
     if (movingHead) {
+        // Exit out of the Tape
+        if (_headPosition >= MAX_TAPE_SIZE-1) {
+            _shouldExit = true;
+            this->reset();
+            return;
+        }
+
         if (_headPosition < MAX_TAPE_SIZE-1)
             _headPosition++;
 

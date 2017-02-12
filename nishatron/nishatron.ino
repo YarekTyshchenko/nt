@@ -34,7 +34,9 @@ void setup() {
         new MenuItem("Settings", NoopRender, NoopControl),
         // @TODO: Choose note -> start selection -> end selection
         new MenuItem("Bulk Apply", NoopRender, NoopControl),
-        new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
+        // @TODO: Move tape and stuff
+        new MenuItem("Edit Tape", EditTapeRender, NoopControl),
+        new MenuItem("Place Notes", EditTapeRender, EditTapeControl),
         new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
         new MenuItem("Save Tape", SaveTapeRender, NoopControl),
         new MenuItem("Clear Tape", ClearTapeRender, NoopControl),
@@ -61,7 +63,6 @@ bool ClearTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
     MenuItem *item = (MenuItem *) _menuItem;
     if (item->pressed) {
         item->pressed = false;
-        // Save
         tape->clearTape();
         return false;
     }
@@ -75,19 +76,12 @@ bool SaveTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
     MenuItem *item = (MenuItem *) _menuItem;
     if (item->pressed) {
         item->pressed = false;
-        // Save
         tape->saveTape();
         return false;
     }
 
     strncpy(buffer[0], "    Click again     ", 21);
     strncpy(buffer[1], "   to save Tape     ", 21);
-    // If save isn't started
-    // Start Save
-    // yield for display
-    // Loop through the tape
-        // Read current EEPROM cell
-        // If its different, update
     return true;
 }
 
@@ -136,7 +130,7 @@ bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     snprintf(buffer[1], 21, "Playing: [%d]      ", tape->headPosition());
     if (playing)
         tape->advancePlayhead();
-    if (tape->headPosition() >= MAX_TAPE_SIZE - 1) {
+    if (tape->shouldExit()) {
         // Reached the end
         tape->reset();
         return false;
