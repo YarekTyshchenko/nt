@@ -8,6 +8,10 @@ public:
     void control(uint8_t mode);
     void render(char buffer[][21]);
 private:
+    void displayMenu(char buffer[][21]);
+    void displayNoteMenu(char buffer[][21]);
     Tape *tape;
-    uint8_t state;
+    volatile uint8_t state;
+    volatile uint8_t menuCursor;
+    uint8_t menuViewportStart;
 };
