@@ -32,6 +32,8 @@ void setup() {
 
     MenuItem* items[] = {
         new MenuItem("Settings", NoopRender, NoopControl),
+        // @TODO: Choose note -> start selection -> end selection
+        new MenuItem("Bulk Apply", NoopRender, NoopControl),
         new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
         new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
         new MenuItem("Save Tape", SaveTapeRender, NoopControl),
@@ -103,7 +105,7 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     Note* note = tape->noteAt(position);
 
     if (tape->isEdittingNote()) {
-        snprintf(buffer[1], 21, "Note: %s %d ", note->name(), note->id());
+        snprintf(buffer[1], 21, "Note: %s F: %d ", note->name(), note->freq());
     } else {
         snprintf(buffer[1], 21, "  %s at [%3d] ", note->name(), position);
     }
@@ -134,7 +136,7 @@ bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     snprintf(buffer[1], 21, "Playing: [%d]      ", tape->headPosition());
     if (playing)
         tape->advancePlayhead();
-    if (tape->headPosition() >= 99) { // @TODO: 99 WTF?
+    if (tape->headPosition() >= MAX_TAPE_SIZE - 1) {
         // Reached the end
         tape->reset();
         return false;

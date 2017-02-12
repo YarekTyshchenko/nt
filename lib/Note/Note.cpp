@@ -31,6 +31,7 @@ static const char* notes[] = {
     177 Last note half volume
 
     178 Note off
+    178 Note off half volume
 
     Control
  *  180 loop 1 bar loop 1 time
@@ -62,35 +63,41 @@ unsigned char Note::id() {
 
 // @TODO: Refactor note hanlding 1) Delete note 2) modulo 88 + /88 3) Bulk change
 unsigned char Note::increment() {
-    if (! this->on()) {
-        note = 0;
+    // Break into component + volume
+    unsigned char pitch = this->pitch(note);
+    unsigned char volume = this->volume();
+
+    // We are at the edge, remove the note
+    if (pitch == 88) {
+        // TODO: Implement note off half volume
+        note = NOTE_NULL;
         return note;
     }
-    if (note < 88) {
-        return ++note;
-    }
-    // limit is 88
-    if (note > 88 && note < 177) {
-        return ++note;
-    }
+    // Increase the component
+    pitch++;
+
+    note = volume * 89 + pitch;
     return note;
 }
 
 unsigned char Note::decrement() {
-    if (! this->on()) {
-        note = 88;
+    // Break into component + volume
+    unsigned char pitch = this->pitch(note);
+    unsigned char volume = this->volume();
+
+    // We are at the edge, remove the note
+    if (pitch == 0) {
+        note = NOTE_NULL;
         return note;
     }
-    if (note > 89) {
-        return --note;
-    }
-    if (note > 0 && note < 89) {
-        return --note;
-    }
+    // Decrease the component
+    pitch--;
+
+    note = volume * 89 + pitch;
     return note;
 }
 
-unsigned int Note::normalise(unsigned int value) {
+unsigned int Note::pitch(unsigned int value) {
     if (value <= 88) {
         return value;
     }
@@ -108,18 +115,18 @@ bool Note::on() {
 }
 
 unsigned int Note::freq() {
-    unsigned int normalised = this->normalise(note);
+    unsigned int normalised = this->pitch(note);
     return frequencies[normalised];
 }
 
 unsigned char Note::volume() {
-    return 0;
+    return 0; // 0 full volume, 1 half volume
 }
 
 const char* Note::name() {
     if (! this->on()) {
         return "---";
     }
-    unsigned int normalised = this->normalise(note);
+    unsigned int normalised = this->pitch(note);
     return notes[normalised];
 }

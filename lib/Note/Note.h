@@ -1,4 +1,5 @@
 #define NOTE_NULL 178
+#define NOTE_NULL_HALF_VOLUME 179
 
 class Note {
 public:
@@ -12,5 +13,5 @@ public:
     unsigned char decrement();
 private:
     unsigned char note;
-    unsigned int normalise(unsigned int value);
+    unsigned int pitch(unsigned int value);
 };

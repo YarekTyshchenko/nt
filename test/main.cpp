@@ -33,26 +33,26 @@ void testNotePitch() {
     // Decrement from 0
     Note *n = new Note(0);
     unsigned char d = n->decrement();
-    assert(d == 0);
+    assert(d == 178);
     assert(n->freq() == 31);
 
     // Decrement from 89
     n = new Note(89);
     d = n->decrement();
-    assert(d == 89);
+    assert(d == 178);
     assert(n->freq() == 31);
 
     // Increment from 177
     n = new Note(177);
     d = n->increment();
-    assert(d == 177);
-    assert(n->freq() == 4978);
+    assert(d == 178);
+    assert(n->freq() == 31);
 
     // Increment from 88
     n = new Note(88);
     d = n->increment();
-    assert(d == 88);
-    assert(n->freq() == 4978);
+    assert(d == 178);
+    assert(n->freq() == 31);
 }
 
 void testNoteOff() {

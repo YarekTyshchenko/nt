@@ -2,14 +2,11 @@
 #include <NewTone.h>
 #include <EEPROM.h>
 
-#define MAX_TAPE_SIZE 100
 #define SCREEN_SIZE 20
 
 unsigned char TAPE[MAX_TAPE_SIZE] = {};
 
 Tape::Tape() {
-    // Init the tape to Note 178 -- Off
-    memset(TAPE, 178, MAX_TAPE_SIZE); //@TODO: Initialise from EEPROM
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
     _shouldExit = false;
@@ -17,6 +14,10 @@ Tape::Tape() {
     _playback = false;
     _toneOffAt = 0;
     playableLength = 0;
+
+    for (size_t address = 0; address < MAX_TAPE_SIZE; address++) {
+        TAPE[address] = EEPROM.read(address);
+    }
 }
 
 void Tape::clearTape() {
@@ -84,15 +85,15 @@ size_t Tape::headPosition() {
 void Tape::noteIncrementPitch(size_t position) {
     Note note = Note(TAPE[position]);
     TAPE[position] = note.increment(); //@TODO: Refactor this not to write needlessly
-
-    NewTone(4, note.freq(), 1000);
+    if (note.on())
+        NewTone(4, note.freq(), 1000);
 }
 
 void Tape::noteDecrementPitch(size_t position) {
     Note note = Note(TAPE[position]);
     TAPE[position] = note.decrement();
-
-    NewTone(4, note.freq(), 1000);
+    if (note.on())
+        NewTone(4, note.freq(), 1000);
 }
 
 bool Tape::shouldExit() {

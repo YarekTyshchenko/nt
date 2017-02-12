@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "Note.h"
 
+#define MAX_TAPE_SIZE 300
+
 class Tape {
 public:
     Tape();
