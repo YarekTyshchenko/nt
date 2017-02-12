@@ -68,8 +68,8 @@ bool ClearTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
         return false;
     }
 
-    strncpy(buffer[0], "    Click again     ", 21);
-    strncpy(buffer[1], "   to erase Tape    ", 21);
+    strncpy_P(buffer[0], (const char*)F("    Click again     "), 21);
+    strncpy_P(buffer[1], (const char*)F("   to erase Tape    "), 21);
     return true;
 }
 
@@ -81,14 +81,14 @@ bool SaveTapeRender(void* _menuItem, char buffer[][21], size_t rows) {
         return false;
     }
 
-    strncpy(buffer[0], "    Click again     ", 21);
-    strncpy(buffer[1], "   to save Tape     ", 21);
+    strncpy_P(buffer[0], (const char*)F("    Click again     "), 21);
+    strncpy_P(buffer[1], (const char*)F("   to save Tape     "), 21);
     return true;
 }
 
 // Ram display
 void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
-    snprintf(buffer, 21, "  RAM free %-4d B", freeMemory());
+    snprintf_P(buffer, 21, (const char*)F("  RAM free %-4d B"), freeMemory());
     if (selected) {
         buffer[0] = '>';
     }
@@ -101,9 +101,9 @@ bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     Note* note = tape->noteAt(position);
 
     if (tape->isEdittingNote()) {
-        snprintf(buffer[1], 21, "Note: %s F: %d ", note->name(), note->freq());
+        snprintf_P(buffer[1], 21, (const char*)F("Note: %s F: %d "), note->name(), note->freq());
     } else {
-        snprintf(buffer[1], 21, "  %s at [%3d] ", note->name(), position);
+        snprintf_P(buffer[1], 21, (const char*)F("  %s at [%3d] "), note->name(), position);
     }
     delete note;
     //snprintf(buffer[0], 21, "Memory: %d", freeMemory());
@@ -130,7 +130,7 @@ void EditTapeControl(uint8_t mode) {
 bool playing = false;
 bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     tape->render(buffer[0]);
-    snprintf(buffer[1], 21, "Playing: [%d]      ", tape->headPosition());
+    snprintf_P(buffer[1], 21, (const char*)F("Playing: [%d]      "), tape->headPosition());
     if (playing)
         tape->advancePlayhead();
     if (tape->shouldExit()) {

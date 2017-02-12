@@ -2,7 +2,7 @@
 #include "MenuItem.h"
 static void defaultCallback(void *_menuItem, char buffer[21], bool selected) {
     MenuItem *it = (MenuItem*) _menuItem;
-    snprintf(buffer, 21, "  %-18s", it->name);
+    snprintf_P(buffer, 21, (const char*)F("  %-18s"), it->name);
     if (selected) {
         buffer[0] = '>';
     }
