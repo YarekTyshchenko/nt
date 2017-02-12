@@ -76,14 +76,13 @@ void EditMachine::render(char buffer[][21]) {
         break;
         case EM_MENU:
         // Menu is displayed, scroll through it
-        snprintf(buffer[0], 21, "MENU!: %d         ", state);
+        snprintf_P(buffer[0], 21, (const char*)F("MENU!: %d         "), state);
         break;
         case EM_NOTE:
         // Optional Note placement menu
-        snprintf(buffer[0], 21, "Note!: %d         ", state);
+        snprintf_P(buffer[0], 21, (const char*)F("Note!: %d         "), state);
         break;
     }
 
-    //snprintf(buffer[1], 21, "State: %d         ", state);
-    snprintf(buffer[1], 21, "  RAM free %-4d B", freeMemory());
+    snprintf_P(buffer[1], 21, (const char*)F("  RAM free %-4d B"), freeMemory());
 }
