@@ -186,7 +186,7 @@ void EditMachine::render(char buffer[][21]) {
         break;
         case EM_SELECT:
         tape->render(buffer[0]);
-        this->renderSnake(buffer[1], c1, c2, selectionStart > viewportStart);
+        this->renderSnake(buffer[1], c1, c2, selectionStart >= viewportStart);
         break;
         case EM_PLACE:
         tape->render(buffer[0]);
