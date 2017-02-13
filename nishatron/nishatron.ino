@@ -99,7 +99,7 @@ void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
 // Edit Tape
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     editMachine->render(buffer);
-    return !tape->shouldExit();
+    return !editMachine->shouldExit();
 }
 
 void EditTapeControl(uint8_t mode) {

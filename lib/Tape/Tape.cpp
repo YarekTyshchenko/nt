@@ -55,9 +55,13 @@ void Tape::play() {
 }
 
 void Tape::playNoteAtCursor(size_t position, unsigned long length) {
-    Note note = Note(TAPE[position]);
-    if (note.on()) {
-        NewTone(4, note.freq(), length);
+    this->playNote(TAPE[position], length);
+}
+
+void Tape::playNote(unsigned char note, unsigned long length) {
+    Note n = Note(note);
+    if (n.on()) {
+        NewTone(4, n.freq(), length);
     }
 }
 
@@ -103,6 +107,7 @@ void Tape::noteDecrementPitch(size_t position) {
 bool Tape::shouldExit() {
     if (_shouldExit) {
         _shouldExit = false;
+        this->reset();
         return true;
     }
     return false;
@@ -118,7 +123,6 @@ void Tape::left() {
         // Exit out of the Tape
         if (_headPosition <= 0) {
             _shouldExit = true;
-            this->reset();
             return;
         }
 
@@ -141,7 +145,6 @@ void Tape::right() {
         // Exit out of the Tape
         if (_headPosition >= MAX_TAPE_SIZE-1) {
             _shouldExit = true;
-            this->reset();
             return;
         }
 

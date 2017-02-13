@@ -37,6 +37,18 @@ EditMachine::EditMachine(Tape *_tape) {
     noteMenuViewportStart = 0;
 }
 
+bool EditMachine::shouldExit() {
+    if (state != EM_SCROLL) {
+        return false;
+    }
+    if (tape->shouldExit()) {
+        selectionStart = 0;
+        selectionEnd = 0;
+        return true;
+    }
+    return false;
+}
+
 void EditMachine::control(uint8_t mode) {
     if (mode == CONTROL_PRESS) {
         switch (state) {
@@ -47,6 +59,7 @@ void EditMachine::control(uint8_t mode) {
             case EM_SELECT: // 1
             state = EM_MENU;
             selectionEnd = tape->headPosition();
+            // @TODO: Normalise start and end!
             menuCursor = 0;
             menuViewportStart = 0;
             break;
@@ -56,7 +69,7 @@ void EditMachine::control(uint8_t mode) {
                 state = EM_NOTE;
             // if menu clear -> perform and go straight to EM_SCROLL
             } else if (menuCursor == MENU_CLEAR) {
-                for (size_t i = selectionStart; i < selectionEnd; i++) {
+                for (size_t i = selectionStart; i <= selectionEnd; i++) {
                     tape->placeNoteAt(i, NOTE_NULL);
                 }
                 state = EM_SCROLL;
@@ -68,7 +81,7 @@ void EditMachine::control(uint8_t mode) {
             break;
             case EM_NOTE: // 3 Optional Note placement menu
             // Select the note;
-            for (size_t i = selectionStart; i < selectionEnd; i++) {
+            for (size_t i = selectionStart; i <= selectionEnd; i++) {
                 tape->placeNoteAt(i, noteMenuCursor);
             }
             // Replace selections with notes
@@ -100,6 +113,7 @@ void EditMachine::control(uint8_t mode) {
         // Optional Note placement menu
         if (mode == CONTROL_CW && noteMenuCursor < 88) noteMenuCursor++;
         if (mode == CONTROL_CCW && noteMenuCursor > 0) noteMenuCursor--;
+        tape->playNote(noteMenuCursor, 50);
         break;
     }
 }
@@ -148,14 +162,31 @@ void EditMachine::displayNoteMenu(char buffer[][21]) {
 */
 void EditMachine::render(char buffer[][21]) {
     // State machine
+    size_t viewportStart = tape->viewportStart;
+    size_t c1 = (selectionStart - viewportStart);
+    size_t c2 = (tape->headPosition() - viewportStart);
+    if (selectionStart < viewportStart) {
+        c1 = 0;
+    } else if (c1 > 20) {
+        c1 = 20;
+    }
+    if (c1 > c2) {
+        // Swap
+        size_t c3 = c1;
+        c1 = c2;
+        c2 = c3;
+    }
     switch (state) {
         case EM_SCROLL:
         tape->render(buffer[0]);
-        strncpy_P(buffer[1], (const char*)F("    Select Range    "), 21);
+        snprintf_P(
+            buffer[1], 21, (const char*)F("  %s at [%3d/%3d] "),
+            tape->noteAt(tape->headPosition())->name(), tape->headPosition(), MAX_TAPE_SIZE-1
+        );
         break;
         case EM_SELECT:
         tape->render(buffer[0]);
-        strncpy_P(buffer[1], (const char*)F(" End Selection Range"), 21);
+        this->renderSnake(buffer[1], c1, c2, selectionStart > viewportStart);
         break;
         case EM_PLACE:
         tape->render(buffer[0]);
@@ -170,6 +201,26 @@ void EditMachine::render(char buffer[][21]) {
         this->displayNoteMenu(buffer);
         break;
     }
-
+    //sprintf(buffer[1], "S: %-1d M: %-1d N:%-2d", state, menuCursor, noteMenuCursor);
     //snprintf_P(buffer[1], 21, (const char*)F("  RAM free %-4d B"), freeMemory());
+}
+
+void EditMachine::renderSnake(char buffer[21], size_t c1, size_t c2, bool foo) {
+    memset(buffer, ' ', 20);
+    for (size_t i = c1; i < c2; i++) {
+        buffer[i] = '-';
+    }
+    buffer[c2] = '^';
+    if (foo) {
+        buffer[c1] = '^';
+    }
+    // Render counter [ 21/299] left, right, or middle of the screen
+    // [ 21/299] ^-[ 21/299]-^
+    size_t width = c2 - c1;
+    if (width > 9) {
+        size_t offset = width/2 - 9/2;
+        char b2[10];
+        sprintf(b2, "[%3d/%3d]", tape->headPosition(), MAX_TAPE_SIZE-1);
+        memcpy(&buffer[c1+offset], b2, 9);
+    }
 }

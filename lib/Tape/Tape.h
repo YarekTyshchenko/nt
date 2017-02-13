@@ -16,6 +16,7 @@ public:
     void render(char buffer[]);
     size_t headPosition();
     Note* noteAt(size_t position);
+    void playNote(unsigned char note, unsigned long length);
     void placeNoteAt(size_t position, unsigned char noteId);
     void playNoteAtCursor(size_t position, unsigned long length);
     void play();

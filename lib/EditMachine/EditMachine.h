@@ -7,9 +7,11 @@ public:
     EditMachine(Tape*);
     void control(uint8_t mode);
     void render(char buffer[][21]);
+    bool shouldExit();
 private:
     void displayMenu(char buffer[][21]);
     void displayNoteMenu(char buffer[][21]);
+    void renderSnake(char buffer[21], size_t, size_t, bool);
     Tape *tape;
     volatile uint8_t state;
     volatile uint8_t menuCursor;
