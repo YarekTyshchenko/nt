@@ -217,10 +217,18 @@ void EditMachine::renderSnake(char buffer[21], size_t c1, size_t c2, bool foo) {
     // Render counter [ 21/299] left, right, or middle of the screen
     // [ 21/299] ^-[ 21/299]-^
     size_t width = c2 - c1;
+    char b2[10];
+    sprintf(b2, "[%3d/%3d]", tape->headPosition(), MAX_TAPE_SIZE-1);
     if (width > 9) {
         size_t offset = width/2 - 9/2;
-        char b2[10];
-        sprintf(b2, "[%3d/%3d]", tape->headPosition(), MAX_TAPE_SIZE-1);
         memcpy(&buffer[c1+offset], b2, 9);
+    } else {
+        // Try left or right
+        if (c1 > 9) {
+            // Enough room on the left
+            memcpy(buffer, b2, 9);
+        } else if (20 - c2 > 9) {
+            memcpy(&buffer[20 - 9], b2, 9);
+        }
     }
 }
