@@ -14,6 +14,8 @@ private:
     volatile uint8_t state;
     volatile uint8_t menuCursor;
     uint8_t menuViewportStart;
+    volatile uint16_t noteMenuCursor;
+    uint16_t noteMenuViewportStart;
     volatile size_t selectionStart;
     volatile size_t selectionEnd;
 };

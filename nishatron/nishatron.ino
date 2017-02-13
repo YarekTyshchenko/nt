@@ -34,20 +34,20 @@ void setup() {
     editMachine = new EditMachine(tape);
 
     MenuItem* items[] = {
-        // @TODO: Choose note -> start selection -> end selection
-        new MenuItem("Bulk Apply", NoopRender, NoopControl),
-        // @TODO: Move tape and stuff
+        // @TODO: Do a trick where if you press twice on the same spot, you exit out of a mode
+        //new MenuItem("Bulk Apply", NoopRender, NoopControl),
+        // @TODO: Move tape and stuff, start selection -> end selection -> Choose note
         new MenuItem("Edit Tape", EditTapeRender, EditTapeControl),
         new MenuItem("Place Notes", PlaceNotesRender, PlaceNotesControl),
         new MenuItem("Play Tape", PlayTapeRender, PlayTapeControl),
         new MenuItem("Save Tape", SaveTapeRender, NoopControl),
         new MenuItem("Clear Tape", ClearTapeRender, NoopControl),
-        new MenuItem("BPM", NoopRender, NoopControl),
+        //new MenuItem("BPM", NoopRender, NoopControl),
         new MenuItem(MemoryNameRender, NoopRender, NoopControl),
     };
 
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
-    menu->preselect(1, true);
+    menu->preselect(0, true);
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
@@ -132,10 +132,6 @@ void PlaceNotesControl(uint8_t mode) {
         tape->left();
     } else if (mode == CONTROL_PRESS) {
         tape->press();
-    }
-
-    if (!tape->isEdittingNote() && (mode == CONTROL_CW || mode == CONTROL_CCW)) {
-        tape->playNoteAtCursor(tape->headPosition(), 100);
     }
 }
 

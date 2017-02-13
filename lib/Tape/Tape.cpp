@@ -41,6 +41,10 @@ void Tape::saveTape() {
     }
 }
 
+void Tape::placeNoteAt(size_t position, unsigned char noteId) {
+    TAPE[position] = noteId; // @TODO: Are you crazy?
+}
+
 void Tape::reset() {
     _headPosition = 0;
     viewportStart = 0;
@@ -126,6 +130,7 @@ void Tape::left() {
             viewportStart = _headPosition;
         }
 
+        this->playNoteAtCursor(this->headPosition(), 100);
     } else {
         noteDecrementPitch(_headPosition);
     }
@@ -147,6 +152,8 @@ void Tape::right() {
         if (_headPosition - viewportStart > (SCREEN_SIZE - 1)) {
             viewportStart = _headPosition - (SCREEN_SIZE - 1);
         }
+
+        this->playNoteAtCursor(this->headPosition(), 100);
     } else {
         noteIncrementPitch(_headPosition);
     }
