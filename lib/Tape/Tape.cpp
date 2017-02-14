@@ -89,6 +89,12 @@ bool Tape::isPlaying() {
 size_t Tape::headPosition() {
     return _headPosition;
 }
+bool Tape::atLeftStop() {
+    return (this->headPosition() == 0);
+}
+bool Tape::atRightStop() {
+    return (this->headPosition() == MAX_TAPE_SIZE-1);
+}
 
 void Tape::noteIncrementPitch(size_t position) {
     Note note = Note(TAPE[position]);

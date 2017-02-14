@@ -97,12 +97,16 @@ void EditMachine::control(uint8_t mode) {
     switch (state) {
         case EM_SCROLL:
         // Move tape left or right, marks the starting point of selection
+        // Handle exit correctly
+        if (mode == CONTROL_CW) tape->right();
+        if (mode == CONTROL_CCW) tape->left();
+        break;
         case EM_SELECT:
         // Save the starting point, now we are moving selection
         case EM_PLACE:
         // Placing the final action
-        if (mode == CONTROL_CW) tape->right();
-        if (mode == CONTROL_CCW) tape->left();
+        if (mode == CONTROL_CW && !tape->atRightStop()) tape->right();
+        if (mode == CONTROL_CCW && !tape->atLeftStop()) tape->left();
         break;
         case EM_MENU:
         // Menu is displayed, scroll through it
@@ -201,8 +205,6 @@ void EditMachine::render(char buffer[][21]) {
         this->displayNoteMenu(buffer);
         break;
     }
-    //sprintf(buffer[1], "S: %-1d M: %-1d N:%-2d", state, menuCursor, noteMenuCursor);
-    //snprintf_P(buffer[1], 21, (const char*)F("  RAM free %-4d B"), freeMemory());
 }
 
 void EditMachine::renderSnake(char buffer[21], size_t c1, size_t c2, bool foo) {

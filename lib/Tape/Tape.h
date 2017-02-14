@@ -15,6 +15,8 @@ public:
     // One line render
     void render(char buffer[]);
     size_t headPosition();
+    bool atRightStop();
+    bool atLeftStop();
     Note* noteAt(size_t position);
     void playNote(unsigned char note, unsigned long length);
     void placeNoteAt(size_t position, unsigned char noteId);

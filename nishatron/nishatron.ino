@@ -97,12 +97,20 @@ void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
 }
 
 // Edit Tape
+bool tapeShouldExit = false;
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     editMachine->render(buffer);
-    return !editMachine->shouldExit();
+    if (tapeShouldExit) {
+        tapeShouldExit = false;
+        return false;
+    }
+    return true;
 }
 
 void EditTapeControl(uint8_t mode) {
+    if ((mode == CONTROL_CCW && tape->atLeftStop()) || (mode == CONTROL_CW && tape->atRightStop())) {
+        tapeShouldExit = true;
+    }
     //@TODO: Implement hold?
     editMachine->control(mode);
 }
@@ -122,10 +130,17 @@ bool PlaceNotesRender(void *_menuItem, char buffer[][21], size_t rows) {
     //snprintf(buffer[0], 21, "Memory: %d", freeMemory());
 
     // Should exit -> is more output required
-    return !tape->shouldExit();
+    if (tapeShouldExit) {
+        tapeShouldExit = false;
+        return false;
+    }
+    return true;
 };
 
 void PlaceNotesControl(uint8_t mode) {
+    if ((mode == CONTROL_CCW && tape->atLeftStop()) || (mode == CONTROL_CW && tape->atRightStop())) {
+        tapeShouldExit = true;
+    }
     if (mode == CONTROL_CW) {
         tape->right();
     } else if (mode == CONTROL_CCW) {
@@ -142,7 +157,8 @@ bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     snprintf_P(buffer[1], 21, (const char*)F("Playing: [%d]      "), tape->headPosition());
     if (playing)
         tape->advancePlayhead();
-    if (tape->shouldExit()) {
+    if (tapeShouldExit) {
+        tapeShouldExit = false;
         // Reached the end
         tape->reset();
         return false;
@@ -151,6 +167,13 @@ bool PlayTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
 };
 
 void PlayTapeControl(uint8_t mode) {
+    if (
+        (mode == CONTROL_CCW && tape->atLeftStop()) ||
+        (mode == CONTROL_CW && tape->atRightStop()) ||
+        (playing && tape->atRightStop())
+    ) {
+        tapeShouldExit = true;
+    }
     if (mode == CONTROL_CW) {
         playing = false;
         tape->right();
