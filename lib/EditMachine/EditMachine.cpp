@@ -7,17 +7,15 @@
 #define EM_PLACE 4
 
 #define MENU_NOTE_MAX 88
-#define LAST_MENU_ITEM_INDEX 4
 
-#define MENU_MOVE   0
-#define MENU_COPY   1
-#define MENU_SET    2
-#define MENU_CLEAR  3
-#define MENU_CANCEL 4
+#define LAST_MENU_ITEM_INDEX 2
+// #define MENU_MOVE   0
+// #define MENU_COPY   1
+#define MENU_SET    0
+#define MENU_CLEAR  1
+#define MENU_CANCEL 2
 
 static const char* menu[] = { //@TODO: Put into Progmem
-    "Move",
-    "Copy",
     "Set",
     "Clear",
     "Cancel"
