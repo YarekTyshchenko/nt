@@ -23,12 +23,20 @@ void rotate() {
     }
 }
 
+void createChars(WinstarOLED lcd) {
+    uint8_t char1[] = {0x4, 0x4, 0xe, 0x15, 0x15, 0x15, 0xe, 0x0};
+    lcd.createChar(1, char1);
+    uint8_t char2[] = {0x4, 0x1f, 0x15, 0x15, 0x15, 0x1f, 0x4, 0x0};
+    lcd.createChar(2, char2);
+}
+
 void setup() {
     //Serial.begin(9600);
 
     lcd.reset(100); // Default is 2 seconds
     lcd.begin(16, 2);
     lcd.clear();
+    createChars(lcd);
 
     tape = new Tape();
     editMachine = new EditMachine(tape);

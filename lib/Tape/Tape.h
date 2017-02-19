@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "Note.h"
 
-#define MAX_TAPE_SIZE 300
+#define MAX_TAPE_SIZE 200
 
 class Tape {
 public:

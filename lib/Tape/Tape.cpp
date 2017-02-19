@@ -167,20 +167,25 @@ char Tape::renderNote(Note *note) {
 void Tape::render(char screenBuffer[]) {
     // loop for screen width
     for (size_t i = 0; i < SCREEN_SIZE; i++) { // @TODO: Shouldn't that be 21?
-        if ((i + viewportStart) % 4 == 0) {
-            screenBuffer[i] = '|';
-        } else {
-            screenBuffer[i] = ' ';
-        }
-
         if (i + viewportStart > MAX_TAPE_SIZE-1) {
             screenBuffer[i] = 'X'; // Protection against display data outside of range
             break;
         }
+
         Note *note = new Note(TAPE[i + viewportStart]);
-        //display note
-        if (note->on()) {
-           screenBuffer[i] = renderNote(note);
+
+        if ((i + viewportStart) % 4 == 0) {
+            if (note->on()) {
+                screenBuffer[i] = (char)1;
+            } else {
+                screenBuffer[i] = '|';
+            }
+        } else {
+            if (note->on()) {
+                screenBuffer[i] = renderNote(note);
+            } else {
+                screenBuffer[i] = (char)165;
+            }
         }
         delete note;
     }
@@ -189,5 +194,9 @@ void Tape::render(char screenBuffer[]) {
     // 29 square
     // 255 block
     size_t cursor = _headPosition - viewportStart;
-    screenBuffer[cursor] = (char)29;
+    if ((cursor + viewportStart) % 4 == 0) {
+        screenBuffer[cursor] = (char)2;
+    } else {
+        screenBuffer[cursor] = (char)29;
+    }
 }
