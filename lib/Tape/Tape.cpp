@@ -9,7 +9,6 @@ unsigned char TAPE[MAX_TAPE_SIZE] = {};
 Tape::Tape() {
     movingHead = true;
     viewportStart = 0; // Left edge of the view port
-    _shouldExit = false;
     _headPosition = 0;
     _playback = false;
     _toneOffAt = 0;
@@ -110,15 +109,6 @@ void Tape::noteDecrementPitch(size_t position) {
         NewTone(4, note.freq(), 1000);
 }
 
-bool Tape::shouldExit() {
-    if (_shouldExit) {
-        _shouldExit = false;
-        this->reset();
-        return true;
-    }
-    return false;
-}
-
 bool Tape::isEdittingNote() {
     return !movingHead;
 }
@@ -126,12 +116,6 @@ bool Tape::isEdittingNote() {
 // Work out viewport from head position, so playback works
 void Tape::left() {
     if (movingHead) {
-        // Exit out of the Tape
-        if (_headPosition <= 0) {
-            _shouldExit = true;
-            return;
-        }
-
         if (_headPosition > 0)
             _headPosition--;
 
@@ -148,12 +132,6 @@ void Tape::left() {
 
 void Tape::right() {
     if (movingHead) {
-        // Exit out of the Tape
-        if (_headPosition >= MAX_TAPE_SIZE-1) {
-            _shouldExit = true;
-            return;
-        }
-
         if (_headPosition < MAX_TAPE_SIZE-1)
             _headPosition++;
 

@@ -20,4 +20,5 @@ private:
     uint16_t noteMenuViewportStart;
     volatile size_t selectionStart;
     volatile size_t selectionEnd;
+    volatile bool _shouldExit;
 };

@@ -100,17 +100,10 @@ void MemoryNameRender(void *_menuItem, char buffer[21], bool selected) {
 bool tapeShouldExit = false;
 bool EditTapeRender(void *_menuItem, char buffer[][21], size_t rows) {
     editMachine->render(buffer);
-    if (tapeShouldExit) {
-        tapeShouldExit = false;
-        return false;
-    }
-    return true;
+    return !editMachine->shouldExit();
 }
 
 void EditTapeControl(uint8_t mode) {
-    if ((mode == CONTROL_CCW && tape->atLeftStop()) || (mode == CONTROL_CW && tape->atRightStop())) {
-        tapeShouldExit = true;
-    }
     //@TODO: Implement hold?
     editMachine->control(mode);
 }

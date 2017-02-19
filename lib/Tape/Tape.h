@@ -30,14 +30,12 @@ public:
     void clearTape();
     void saveTape();
 
-    bool shouldExit();
     volatile size_t viewportStart; // Move this to private
     void advancePlayhead();
 private:
     size_t playableLength;
     unsigned long _toneOffAt;
     bool _playback;
-    bool _shouldExit;
     volatile bool movingHead;
     volatile size_t _headPosition;
     char renderNote(Note *note);

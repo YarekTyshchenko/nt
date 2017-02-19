@@ -35,20 +35,24 @@ EditMachine::EditMachine(Tape *_tape) {
 
     noteMenuCursor = 0;
     noteMenuViewportStart = 0;
+
+    _shouldExit = false;
 }
 
 bool EditMachine::shouldExit() {
     if (state != EM_SCROLL) {
         return false;
     }
-    if (tape->shouldExit()) {
+    if (_shouldExit) {
         selectionStart = 0;
         selectionEnd = 0;
+        _shouldExit = false;
         return true;
     }
     return false;
 }
 
+// Anything modified in this function should be volatile
 void EditMachine::control(uint8_t mode) {
     if (mode == CONTROL_PRESS) {
         switch (state) {
@@ -97,16 +101,17 @@ void EditMachine::control(uint8_t mode) {
     switch (state) {
         case EM_SCROLL:
         // Move tape left or right, marks the starting point of selection
-        // Handle exit correctly
-        if (mode == CONTROL_CW) tape->right();
-        if (mode == CONTROL_CCW) tape->left();
-        break;
+        if ((mode == CONTROL_CCW && tape->atLeftStop()) || (mode == CONTROL_CW && tape->atRightStop())) {
+            // Exit
+            _shouldExit = true;
+            return;
+        }
         case EM_SELECT:
         // Save the starting point, now we are moving selection
         case EM_PLACE:
         // Placing the final action
-        if (mode == CONTROL_CW && !tape->atRightStop()) tape->right();
-        if (mode == CONTROL_CCW && !tape->atLeftStop()) tape->left();
+        if (mode == CONTROL_CW) tape->right();
+        if (mode == CONTROL_CCW) tape->left();
         break;
         case EM_MENU:
         // Menu is displayed, scroll through it
