@@ -52,6 +52,7 @@ void setup() {
         new MenuItem("Clear Tape", ClearTapeRender, NoopControl),
         //new MenuItem("BPM", NoopRender, NoopControl),
         new MenuItem(MemoryNameRender, NoopRender, NoopControl),
+        new MenuItem("Character Set", CharsetRender, CharsetControl),
     };
 
     menu = new Menu(items, sizeof(items) / sizeof(items[0]));
@@ -59,6 +60,29 @@ void setup() {
 
     attachInterrupt(0, rotate, CHANGE);
     attachInterrupt(1, rotate, CHANGE);
+}
+volatile uint8_t charsetCursor = 0;
+bool CharsetRender(void *_menuItem, char buffer[][21], size_t rows) {
+    MenuItem *item = (MenuItem *) _menuItem;
+    if (item->pressed) {
+        item->pressed = false;
+        return false;
+    }
+    for (size_t i = 0; i < 2; i++) {
+        for (size_t k = 0; k < 20; k++) {
+            buffer[i][k] = (char) (charsetCursor + (k));
+        }
+    }
+    snprintf_P(buffer[1], 21, (const char*)F("[%3d]"), charsetCursor);
+    return true;
+}
+
+void CharsetControl(uint8_t mode) {
+    if (mode == CONTROL_CW) {
+        charsetCursor++;
+    } else if (mode == CONTROL_CCW) {
+        charsetCursor--;
+    }
 }
 
 bool NoopRender(void *_menuItem, char buffer[][21], size_t rows) {

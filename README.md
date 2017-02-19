@@ -1,6 +1,7 @@
 # Readme
 
 Todo:
+- Do an Available Char set menu
 - Tape Editing Menu
     - Something to make shifting things on tape easier
     - Move + Copy + Place?
